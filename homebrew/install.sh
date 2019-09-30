@@ -21,4 +21,7 @@ then
 
 fi
 
+# Install what is inside the Brewfile
+echo "$(brew bundle)"
+
 exit 0

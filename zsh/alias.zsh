@@ -1,0 +1,1 @@
+alias cdWork='cd ~/dev/web'
