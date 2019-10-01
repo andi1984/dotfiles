@@ -47,6 +47,10 @@ source $ZSH/oh-my-zsh.sh
 #To enable shims and autocompletion add to your profile:
 eval "$(rbenv init -)"
 
+# Init pyenv
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+
 # Change gem path
 export GEM_PATH=/Users/andreassander/.rbenv/versions/2.1.2/lib/ruby/gems/2.1.0
 function gi() { curl -L -s https://www.gitignore.io/api/$@ ;}
