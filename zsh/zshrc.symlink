@@ -51,24 +51,7 @@ eval "$(rbenv init -)"
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 
-# Change gem path
-export GEM_PATH=/Users/andreassander/.rbenv/versions/2.1.2/lib/ruby/gems/2.1.0
 function gi() { curl -L -s https://www.gitignore.io/api/$@ ;}
-
-# The next line updates PATH for the Google Cloud SDK.
-source '/Users/andreassander/google-cloud-sdk/path.zsh.inc'
-
-# The next line enables shell command completion for gcloud.
-source '/Users/andreassander/google-cloud-sdk/completion.zsh.inc'
-
-# added by travis gem
-[ -f /Users/andreassander/.travis/travis.sh ] && source /Users/andreassander/.travis/travis.sh
-
-###-tns-completion-start-###
-if [ -f /Users/andreassander/.tnsrc ]; then 
-    source /Users/andreassander/.tnsrc 
-fi
-###-tns-completion-end-###
 
 # Stash your environment variables in ~/.localrc. This means they'll stay out
 # of your main dotfiles repository (which may be public, like this one), but
