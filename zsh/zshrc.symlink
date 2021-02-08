@@ -1,3 +1,5 @@
+ZSH_DISABLE_COMPFIX="true"
+
 # your project folder that we can `c [tab]` to
 export PROJECTS=~/dev
 
@@ -77,3 +79,7 @@ do
   source $file
 done
 unset config_files
+export PATH="/usr/local/opt/llvm/bin:$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+
+# Start docker daemon
+eval $(docker-machine env default)
