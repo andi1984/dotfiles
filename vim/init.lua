@@ -35,3 +35,20 @@ cmd 'autocmd CmdlineEnter /,? :set hlsearch'
 cmd 'autocmd CmdlineLeave /,? :set nohlsearch'
 
 vim.api.nvim_command('silent noswapfile')
+
+local Plug = vim.fn['plug#']
+
+vim.call('plug#begin', '~/.config/nvim/plugged')
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+Plug 'dense-analysis/ale'
+Plug 'gruvbox-community/gruvbox'
+vim.call('plug#end')
+
+cmd 'colorscheme gruvbox'
+
+-- Mappings
+vim.api.nvim_set_keymap('n', '<Leader>ff',  [[<Cmd>lua require('telescope.builtin').find_files()<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<Leader>fb',  [[<Cmd>lua require('telescope.builtin').buffers()<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<S-Up>',  ':m-2<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<S-Down>',  ':m+<CR>', { noremap = true, silent = true })
