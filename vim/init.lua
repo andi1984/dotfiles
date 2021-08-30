@@ -18,11 +18,11 @@ cmd 'autocmd CmdlineLeave /,? :set nohlsearch'
 vim.api.nvim_command('silent noswapfile')
 
 -- All the rest
-require('lua/statusline')
-require('lua/opts')
-require('lua/plugins')
-require('lua/keymap')
+require('simple-statusline')
+require('opts')
+require('plugins')
+require('keymap')
 
 -- Plugin related
-require('lua/lsp')
+require('lsp')
 cmd 'colorscheme gruvbox'
