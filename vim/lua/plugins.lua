@@ -25,5 +25,10 @@ Plug 'kyazdani42/nvim-web-devicons'
 Plug 'folke/trouble.nvim'
 Plug ('nvim-treesitter/nvim-treesitter', {['do'] = vim.fn[':TSUpdate']})  -- We recommend updating the parsers on update
 
+Plug 'maxmellon/vim-jsx-pretty'
+
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-commentary'
+
 vim.call('plug#end')
 
