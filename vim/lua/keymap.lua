@@ -2,7 +2,7 @@
 vim.api.nvim_set_keymap('n', '<Leader>ff',  [[<Cmd>lua require('telescope.builtin').find_files()<CR>]], { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<Leader>fb',  [[<Cmd>lua require('telescope.builtin').buffers()<CR>]], { noremap = true, silent = true })
 vim.api.nvim_set_keymap('n', '<Leader>fi', ':Rg ', { noremap = true })
---vim.api.nvim_set_keymap('n', '<Leader>fif', ':Rg <EXPR> -g "*.{js,jsx,ts,tsx}"', { noremap = true, 'expr': v.true })
+--vim.api.nvim_set_keymap('n', '<Leader>fe', ':Rg <EXPR> -g "*.{js,jsx,ts,tsx}"', { noremap = true, 'expr': v.true })
 
 -- Moving lines up/down
 vim.api.nvim_set_keymap('n', '<S-Down>',  ':m+<CR>', { noremap = true, silent = true })
