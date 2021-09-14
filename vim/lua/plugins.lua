@@ -31,6 +31,7 @@ Plug 'maxmellon/vim-jsx-pretty'
 
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-fugitive'
 
 vim.call('plug#end')
 
