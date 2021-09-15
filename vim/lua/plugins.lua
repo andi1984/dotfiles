@@ -24,15 +24,20 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 
+-- Autocompletion Start
 Plug 'Shougo/ddc.vim'
 Plug 'vim-denops/denops.vim'
 
 -- Install your sources
 Plug 'Shougo/ddc-around'
+Plug 'statiolake/ddc-ale'
+Plug 'LumaKernel/ddc-tabnine'
+Plug 'Shougo/ddc-nvim-lsp'
 
 -- Install your filters
 Plug 'Shougo/ddc-matcher_head'
 Plug 'Shougo/ddc-sorter_rank'
+-- Autocompletion End
 
 vim.call('plug#end')
 

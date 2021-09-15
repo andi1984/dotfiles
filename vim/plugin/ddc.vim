@@ -1,7 +1,7 @@
 " Customize global settings
 " Use around source.
 " https://github.com/Shougo/ddc-around
-call ddc#custom#patch_global('sources', ['around'])
+call ddc#custom#patch_global('sources', ['around', 'ale', 'tabnine', 'nvimlsp'])
 
 " Use matcher_head and sorter_rank.
 " https://github.com/Shougo/ddc-matcher_head
@@ -18,6 +18,7 @@ call ddc#custom#patch_global('sourceOptions', {
       \ })
 call ddc#custom#patch_global('sourceParams', {
       \ 'around': {'maxSize': 500},
+      \ 'ale': {'cleanResultsWhitespace': v:false},
       \ })
 
 " Customize settings on a filetype
@@ -27,6 +28,27 @@ call ddc#custom#patch_filetype(['c', 'cpp'], 'sourceOptions', {
       \ })
 call ddc#custom#patch_filetype('markdown', 'sourceParams', {
       \ 'around': {'maxSize': 100},
+      \ })
+
+" Tabnine
+call ddc#custom#patch_global('sourceOptions', {
+    \ 'tabnine': {
+    \   'mark': 'TN',
+    \   'maxCandidates': 5,
+    \   'isVolatile': v:true,
+    \ }})
+
+" LSP
+call ddc#custom#patch_global('sourceOptions', {
+      \ '_': { 'matchers': ['matcher_head'] },
+      \ 'nvimlsp': {
+      \   'mark': 'lsp',
+      \   'forceCompletionPattern': '\.\w*|:\w*|->\w*' },
+      \ })
+
+" Use Customized labels
+call ddc#custom#patch_global('sourceParams', {
+      \ 'nvimlsp': { 'kindLabels': { 'Class': 'c' } },
       \ })
 
 " Mappings
