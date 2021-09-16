@@ -18,7 +18,6 @@ cmd 'autocmd CmdlineLeave /,? :set nohlsearch'
 vim.api.nvim_command('silent noswapfile')
 
 -- All the rest
-require('simple-statusline')
 require('opts')
 require('sets')
 require('plugins')
