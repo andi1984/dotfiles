@@ -33,6 +33,9 @@ Plug 'Shougo/ddc-around'
 Plug 'statiolake/ddc-ale'
 Plug 'LumaKernel/ddc-tabnine'
 Plug 'Shougo/ddc-nvim-lsp'
+Plug 'LumaKernel/ddc-file'
+Plug 'matsui54/ddc-buffer'
+Plug 'delphinus/ddc-treesitter'
 
 -- Install your filters
 Plug 'Shougo/ddc-matcher_head'

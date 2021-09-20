@@ -9,3 +9,6 @@ vim.api.nvim_set_keymap('n', '<S-Down>',  ':m+<CR>', { noremap = true, silent = 
 vim.api.nvim_set_keymap('n', '<S-Up>',  ':m-2<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('v', '<S-Down>',  ':m\'>+1<CR>gv=gv', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('v', '<S-Up>',  ':m\'<-2<CR>gv=gv', { noremap = true, silent = true })
+
+-- Toggle commenting line
+vim.api.nvim_set_keymap('n', '<Leader>c', ':Commentary<CR>', { noremap = true, silent = true })
