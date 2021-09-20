@@ -12,3 +12,7 @@ vim.api.nvim_set_keymap('v', '<S-Up>',  ':m\'<-2<CR>gv=gv', { noremap = true, si
 
 -- Toggle commenting line
 vim.api.nvim_set_keymap('n', '<Leader>c', ':Commentary<CR>', { noremap = true, silent = true })
+
+-- TroubleToggle
+vim.api.nvim_set_keymap('n', '<Leader>xx', '<cmd>Trouble<cr>', { noremap = true, silent = true })
+
