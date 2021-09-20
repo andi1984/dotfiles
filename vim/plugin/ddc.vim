@@ -1,7 +1,7 @@
 " Customize global settings
 " Use around source.
 " https://github.com/Shougo/ddc-around
-call ddc#custom#patch_global('sources', ['around', 'ale', 'tabnine', 'nvimlsp'])
+call ddc#custom#patch_global('sources', ['around', 'ale', 'tabnine', 'nvimlsp', 'file', 'buffer', 'treesitter'])
 
 " Use matcher_head and sorter_rank.
 " https://github.com/Shougo/ddc-matcher_head
@@ -49,6 +49,42 @@ call ddc#custom#patch_global('sourceOptions', {
 " Use Customized labels
 call ddc#custom#patch_global('sourceParams', {
       \ 'nvimlsp': { 'kindLabels': { 'Class': 'c' } },
+      \ })
+
+" File
+call ddc#custom#patch_global('sourceOptions', {
+    \ 'file': {
+    \   'mark': 'F',
+    \   'isVolatile': v:true,
+    \   'forceCompletionPattern': '\S/\S*',
+    \ }})
+
+call ddc#custom#patch_filetype(
+    \ ['ps1', 'dosbatch', 'autohotkey', 'registry'], {
+    \ 'sourceOptions': {
+    \   'file': {
+    \     'forceCompletionPattern': '\S\\\S*',
+    \   },
+    \ },
+    \ 'sourceParams': {
+    \   'file': {
+    \     'mode': 'win32',
+    \   },
+    \ }})
+
+" Buffer
+call ddc#custom#patch_global('sourceOptions', {
+    \ 'buffer': {'mark': 'B'},
+    \ })
+
+call ddc#custom#patch_global('sourceParams', {
+    \ 'buffer': {'requireSameFiletype': v:false},
+    \ })
+
+" Treesitter
+" Change source options
+call ddc#custom#patch_global('sourceOptions', {
+      \ 'treesitter': {'mark': 'T'},
       \ })
 
 " Mappings
