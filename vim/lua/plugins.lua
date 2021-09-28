@@ -45,8 +45,17 @@ Plug 'Shougo/ddc-sorter_rank'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
-
 Plug 'ThePrimeagen/refactoring.nvim'
+
+-- If you don't have nodejs and yarn
+-- use pre build, add 'vim-plug' to the filetype list so vim-plug can update this plugin
+-- see: https://github.com/iamcco/markdown-preview.nvim/issues/50
+Plug(
+        'iamcco/markdown-preview.nvim', {
+                ['do'] = vim.fn['mkdp#util#install()'],
+                ['for'] = {'markdown', 'vim-plug'}
+        }
+)
 
 vim.call('plug#end')
 
