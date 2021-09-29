@@ -16,3 +16,5 @@ vim.api.nvim_set_keymap('n', '<Leader>c', ':Commentary<CR>', { noremap = true, s
 -- TroubleToggle
 vim.api.nvim_set_keymap('n', '<Leader>xx', '<cmd>Trouble<cr>', { noremap = true, silent = true })
 
+-- Relative file name
+vim.api.nvim_set_keymap('n', '<Leader>rf', ':echo fnamemodify(expand("%"), ":~:.")<CR>', { noremap = true, silent = true})
