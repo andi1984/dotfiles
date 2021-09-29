@@ -57,5 +57,7 @@ Plug(
         }
 )
 
+Plug 'norcalli/nvim-colorizer.lua'
+
 vim.call('plug#end')
 
