@@ -1,7 +1,7 @@
 " Customize global settings
 " Use around source.
 " https://github.com/Shougo/ddc-around
-call ddc#custom#patch_global('sources', ['around', 'ale', 'tabnine', 'nvimlsp', 'file', 'buffer', 'treesitter'])
+call ddc#custom#patch_global('sources', ['around', 'ale', 'tabnine', 'nvim-lsp', 'file', 'buffer', 'treesitter'])
 
 " Use matcher_head and sorter_rank.
 " https://github.com/Shougo/ddc-matcher_head
