@@ -58,6 +58,7 @@ Plug(
 )
 
 Plug 'norcalli/nvim-colorizer.lua'
+Plug 'junegunn/vim-easy-align'
 
 vim.call('plug#end')
 
