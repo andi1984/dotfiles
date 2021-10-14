@@ -19,6 +19,7 @@ Plug ('nvim-treesitter/nvim-treesitter', {['do'] = vim.fn[':TSUpdate']})  -- We 
 Plug 'yuezk/vim-js'
 Plug 'HerringtonDarkholme/yats.vim'
 Plug 'maxmellon/vim-jsx-pretty'
+Plug 'mattn/emmet-vim'
 
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
