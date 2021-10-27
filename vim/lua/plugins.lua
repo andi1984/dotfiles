@@ -42,7 +42,7 @@ Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'ThePrimeagen/refactoring.nvim'
 Plug 'wellle/context.vim'
-
+Plug 'github/copilot.vim'
 
 -- Autocompletion Start
 Plug 'Shougo/ddc.vim'
