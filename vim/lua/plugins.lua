@@ -29,12 +29,14 @@ Plug 'vim-airline/vim-airline-themes'
 -- Treesitter
 Plug ('nvim-treesitter/nvim-treesitter', {['do'] = vim.fn[':TSUpdate']})  -- We recommend updating the parsers on update
 
--- JavaScript plugins
+-- WebDev plugins
 Plug 'yuezk/vim-js'
 Plug 'HerringtonDarkholme/yats.vim'
 Plug 'maxmellon/vim-jsx-pretty'
 Plug 'mattn/emmet-vim'
 Plug('styled-components/vim-styled-components', { ['branch'] = 'main' })
+Plug 'AndrewRadev/tagalong.vim'
+Plug 'nelsyeung/twig.vim'
 
 -- Utilty stuff
 Plug 'tpope/vim-surround'
