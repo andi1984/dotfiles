@@ -80,7 +80,7 @@ Plug 'norcalli/nvim-colorizer.lua'
 Plug 'junegunn/vim-easy-align'
 Plug 'folke/which-key.nvim'
 
-Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
+-- Plug 'SirVer/ultisnips'
+-- Plug 'honza/vim-snippets'
 vim.call('plug#end')
 
