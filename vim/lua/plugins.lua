@@ -82,6 +82,9 @@ Plug 'folke/which-key.nvim'
 
 Plug 'Shougo/neosnippet.vim'
 Plug 'Shougo/neosnippet-snippets'
+
+Plug 'ludovicchabant/vim-gutentags'
+Plug( 'kristijanhusak/vim-js-file-import', {['do'] = vim.fn['npm install']})
 -- Plug 'honza/vim-snippets'
 vim.call('plug#end')
 
