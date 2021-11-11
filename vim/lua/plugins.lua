@@ -86,5 +86,6 @@ Plug 'Shougo/neosnippet-snippets'
 -- HIGH HDD USAGE!: Plug 'ludovicchabant/vim-gutentags'
 Plug( 'kristijanhusak/vim-js-file-import', {['do'] = vim.fn['npm install']})
 -- Plug 'honza/vim-snippets'
+Plug('filipdutescu/renamer.nvim', {['branch'] = 'master' })
 vim.call('plug#end')
 
