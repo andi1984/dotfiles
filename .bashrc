@@ -72,4 +72,26 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 source "$HOME/.cargo/env"
 
-export PATH=$HOME/.deno/bin:$HOME/dev/dotfiles/bin:$HOME/dev/dottfiles/bin:$PATH 
+export PATH=$HOME/.deno/bin:$HOME/dev/dotfiles/bin:$HOME/dev/dottfiles/bin:$PATH
+
+enter_directory() {
+  if [[ $PWD == $PREV_PWD ]]; then
+    return
+  fi
+
+  if [[ "$PWD" =~ "$PREV_PWD" && ! -f ".nvmrc" ]]; then
+    return
+  fi
+
+  PREV_PWD=$PWD
+  if [[ -f ".nvmrc" ]]; then
+    nvm use
+    NVM_DIRTY=true
+  elif [[ $NVM_DIRTY = true ]]; then
+    nvm use default
+    NVM_DIRTY=false
+  fi
+}
+
+export PROMPT_COMMAND="enter_directory; ${PROMPT_COMMAND}"
+
