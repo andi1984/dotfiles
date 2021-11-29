@@ -87,5 +87,8 @@ Plug 'Shougo/neosnippet-snippets'
 Plug( 'kristijanhusak/vim-js-file-import', {['do'] = vim.fn['npm install']})
 -- Plug 'honza/vim-snippets'
 Plug('filipdutescu/renamer.nvim', {['branch'] = 'master' })
+-- Plug 'shmargum/vim-sass-colors';
+Plug 'jelera/vim-javascript-syntax';
+Plug 'whiteinge/diffconflicts';
 vim.call('plug#end')
 
