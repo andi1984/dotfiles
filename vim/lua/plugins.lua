@@ -8,10 +8,8 @@ Plug 'nvim-telescope/telescope-fzy-native.nvim'
 
 -- Themes
 Plug 'kyazdani42/nvim-web-devicons'
-Plug 'gruvbox-community/gruvbox'
 Plug 'jacoborus/tender.vim'
 Plug 'mhartington/oceanic-next'
-Plug 'drewtempelmeyer/palenight.vim'
 
 -- FZF
 Plug('junegunn/fzf', {['do'] = vim.fn['fzf#install()']})
@@ -91,5 +89,7 @@ Plug('filipdutescu/renamer.nvim', {['branch'] = 'master' })
 -- Plug 'shmargum/vim-sass-colors';
 Plug 'jelera/vim-javascript-syntax';
 Plug 'whiteinge/diffconflicts';
+Plug 'Pocco81/AutoSave.nvim';
+Plug 'abecodes/tabout.nvim';
 vim.call('plug#end')
 

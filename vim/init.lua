@@ -27,6 +27,4 @@ require('keymap')
 -- Plugin related
 require('lsp')
 cmd 'colorscheme OceanicNext'
--- cmd 'colorscheme palenight'
--- cmd 'colorscheme gruvbox'
 -- cmd 'colorscheme tender'
