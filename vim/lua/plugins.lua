@@ -10,6 +10,7 @@ Plug 'nvim-telescope/telescope-fzy-native.nvim'
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'jacoborus/tender.vim'
 Plug 'mhartington/oceanic-next'
+Plug 'catppuccin/nvim'
 
 -- FZF
 Plug('junegunn/fzf', {['do'] = vim.fn['fzf#install()']})
@@ -36,6 +37,9 @@ Plug('styled-components/vim-styled-components', { ['branch'] = 'main' })
 Plug 'AndrewRadev/tagalong.vim'
 Plug 'nelsyeung/twig.vim'
 Plug 'David-Kunz/jester'
+Plug 'ap/vim-css-color'
+Plug( 'kristijanhusak/vim-js-file-import', {['do'] = vim.fn['npm install']})
+Plug 'jelera/vim-javascript-syntax';
 
 -- Utilty stuff
 Plug 'tpope/vim-surround'
@@ -83,11 +87,9 @@ Plug 'Shougo/neosnippet.vim'
 Plug 'Shougo/neosnippet-snippets'
 
 -- HIGH HDD USAGE!: Plug 'ludovicchabant/vim-gutentags'
-Plug( 'kristijanhusak/vim-js-file-import', {['do'] = vim.fn['npm install']})
 -- Plug 'honza/vim-snippets'
 Plug('filipdutescu/renamer.nvim', {['branch'] = 'master' })
 -- Plug 'shmargum/vim-sass-colors';
-Plug 'jelera/vim-javascript-syntax';
 Plug 'whiteinge/diffconflicts';
 Plug 'Pocco81/AutoSave.nvim';
 Plug 'abecodes/tabout.nvim';

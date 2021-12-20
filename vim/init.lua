@@ -28,3 +28,4 @@ require('keymap')
 require('lsp')
 cmd 'colorscheme OceanicNext'
 -- cmd 'colorscheme tender'
+-- cmd 'colorscheme catppuccin'
