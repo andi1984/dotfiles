@@ -15,10 +15,14 @@ vim.api.nvim_set_keymap('n', '<Leader>c', ':Commentary<CR>', { noremap = true, s
 
 -- TroubleToggle
 vim.api.nvim_set_keymap('n', '<Leader>xx', '<cmd>Trouble<cr>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<Leader>xd', [[<Cmd>lua vim.diagnostic.show_line_diagnostics()<CR>]], { noremap = true, silent = true })
 
 -- Relative file name
 vim.api.nvim_set_keymap('n', '<Leader>rf', ':echo fnamemodify(expand("%"), ":~:.")<CR>', { noremap = true, silent = true})
 
+
+
+vim.api.nvim_set_keymap('n', '<Leader>jj',  [[<Cmd>lua require"jester".run_file()<CR>]], { noremap = true, silent = true })
 -- Experimental shortcuts
 
 

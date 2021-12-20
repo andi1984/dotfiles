@@ -37,6 +37,7 @@ Plug 'mattn/emmet-vim'
 Plug('styled-components/vim-styled-components', { ['branch'] = 'main' })
 Plug 'AndrewRadev/tagalong.vim'
 Plug 'nelsyeung/twig.vim'
+Plug 'David-Kunz/jester'
 
 -- Utilty stuff
 Plug 'tpope/vim-surround'
