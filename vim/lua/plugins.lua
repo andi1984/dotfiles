@@ -10,7 +10,6 @@ Plug 'nvim-telescope/telescope-fzy-native.nvim'
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'jacoborus/tender.vim'
 Plug 'mhartington/oceanic-next'
-Plug 'catppuccin/nvim'
 
 -- FZF
 Plug('junegunn/fzf', {['do'] = vim.fn['fzf#install()']})
