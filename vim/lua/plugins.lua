@@ -19,6 +19,8 @@ Plug 'junegunn/fzf.vim'
 Plug 'neovim/nvim-lsp'
 Plug 'dense-analysis/ale'
 Plug 'folke/trouble.nvim'
+Plug 'neovim/nvim-lspconfig'
+Plug 'williamboman/nvim-lsp-installer'
 
 -- Footer
 Plug 'vim-airline/vim-airline'
@@ -80,7 +82,7 @@ Plug(
 
 Plug 'norcalli/nvim-colorizer.lua'
 Plug 'junegunn/vim-easy-align'
-Plug 'folke/which-key.nvim'
+-- Plug 'folke/which-key.nvim'
 
 Plug 'Shougo/neosnippet.vim'
 Plug 'Shougo/neosnippet-snippets'
@@ -92,5 +94,8 @@ Plug('filipdutescu/renamer.nvim', {['branch'] = 'master' })
 Plug 'whiteinge/diffconflicts';
 Plug 'Pocco81/AutoSave.nvim';
 Plug 'abecodes/tabout.nvim';
+Plug 'airblade/vim-gitgutter';
+Plug 'preservim/tagbar';
+Plug 'mhinz/vim-startify';
 vim.call('plug#end')
 
