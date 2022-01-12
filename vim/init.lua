@@ -23,9 +23,7 @@ require('sets')
 require('plugins')
 require('keymap')
 
-
 -- Plugin related
-require('lsp')
 cmd 'colorscheme OceanicNext'
 -- cmd 'colorscheme tender'
 -- cmd 'colorscheme catppuccin'

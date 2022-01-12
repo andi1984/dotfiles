@@ -17,10 +17,9 @@ Plug 'junegunn/fzf.vim'
 
 -- LSP & Linting
 Plug 'neovim/nvim-lsp'
+Plug 'neovim/nvim-lspconfig'
 Plug 'dense-analysis/ale'
 Plug 'folke/trouble.nvim'
-Plug 'neovim/nvim-lspconfig'
-Plug 'williamboman/nvim-lsp-installer'
 
 -- Footer
 Plug 'vim-airline/vim-airline'
@@ -82,7 +81,7 @@ Plug(
 
 Plug 'norcalli/nvim-colorizer.lua'
 Plug 'junegunn/vim-easy-align'
--- Plug 'folke/which-key.nvim'
+Plug 'folke/which-key.nvim'
 
 Plug 'Shougo/neosnippet.vim'
 Plug 'Shougo/neosnippet-snippets'
