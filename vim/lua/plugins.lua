@@ -96,5 +96,6 @@ Plug 'abecodes/tabout.nvim';
 Plug 'airblade/vim-gitgutter';
 Plug 'preservim/tagbar';
 Plug 'mhinz/vim-startify';
+Plug 'ekalinin/Dockerfile.vim'
 vim.call('plug#end')
 
