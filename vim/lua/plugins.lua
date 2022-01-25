@@ -1,34 +1,66 @@
 local Plug = vim.fn['plug#']
 
 vim.call('plug#begin', '~/.config/nvim/plugged')
+
+--------------------------------------------------------------------------------
+-- General
+--------------------------------------------------------------------------------
+Plug 'mhinz/vim-startify';
+Plug 'norcalli/nvim-colorizer.lua'
+Plug 'folke/which-key.nvim'
+Plug 'junegunn/vim-easy-align'
+Plug('filipdutescu/renamer.nvim', {['branch'] = 'master' })
+Plug 'Pocco81/AutoSave.nvim';
+Plug 'abecodes/tabout.nvim';
+
+--------------------------------------------------------------------------------
+-- Git
+--------------------------------------------------------------------------------
+Plug 'whiteinge/diffconflicts';
+Plug 'airblade/vim-gitgutter';
+
+--------------------------------------------------------------------------------
 -- Telescope Fuzzy Finder
+--------------------------------------------------------------------------------
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-telescope/telescope-fzy-native.nvim'
 
+--------------------------------------------------------------------------------
 -- Themes
+--------------------------------------------------------------------------------
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'jacoborus/tender.vim'
 Plug 'mhartington/oceanic-next'
 
+--------------------------------------------------------------------------------
 -- FZF
+--------------------------------------------------------------------------------
 Plug('junegunn/fzf', {['do'] = vim.fn['fzf#install()']})
 Plug 'junegunn/fzf.vim'
 
+--------------------------------------------------------------------------------
 -- LSP & Linting
+--------------------------------------------------------------------------------
 Plug 'neovim/nvim-lsp'
 Plug 'neovim/nvim-lspconfig'
 Plug 'dense-analysis/ale'
 Plug 'folke/trouble.nvim'
 
+--------------------------------------------------------------------------------
 -- Footer
+--------------------------------------------------------------------------------
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
+--------------------------------------------------------------------------------
 -- Treesitter
+--------------------------------------------------------------------------------
 Plug ('nvim-treesitter/nvim-treesitter', {['do'] = vim.fn[':TSUpdate']})  -- We recommend updating the parsers on update
 
+--------------------------------------------------------------------------------
 -- WebDev plugins
+--------------------------------------------------------------------------------
 Plug 'yuezk/vim-js'
 Plug 'HerringtonDarkholme/yats.vim'
 Plug 'maxmellon/vim-jsx-pretty'
@@ -41,13 +73,19 @@ Plug 'David-Kunz/jester'
 Plug( 'kristijanhusak/vim-js-file-import', {['do'] = vim.fn['npm install']})
 Plug 'jelera/vim-javascript-syntax';
 
+--------------------------------------------------------------------------------
 -- Utilty stuff
+--------------------------------------------------------------------------------
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'ThePrimeagen/refactoring.nvim'
 Plug 'wellle/context.vim'
 Plug 'github/copilot.vim'
+
+--------------------------------------------------------------------------------
+-- Autocomplete
+--------------------------------------------------------------------------------
 
 -- Autocompletion Start
 Plug 'Shougo/ddc.vim'
@@ -67,35 +105,30 @@ Plug 'Shougo/ddc-matcher_head'
 Plug 'Shougo/ddc-sorter_rank'
 -- Autocompletion End
 
-
--- Trying out area below:
--- If you don't have nodejs and yarn
--- use pre build, add 'vim-plug' to the filetype list so vim-plug can update this plugin
--- see: https://github.com/iamcco/markdown-preview.nvim/issues/50
-Plug(
-        'iamcco/markdown-preview.nvim', {
-                ['do'] = vim.fn['mkdp#util#install()'],
-                ['for'] = {'markdown', 'vim-plug'}
-        }
-)
-
-Plug 'norcalli/nvim-colorizer.lua'
-Plug 'junegunn/vim-easy-align'
-Plug 'folke/which-key.nvim'
-
+--------------------------------------------------------------------------------
+-- Snippets
+--------------------------------------------------------------------------------
 Plug 'Shougo/neosnippet.vim'
 Plug 'Shougo/neosnippet-snippets'
 
--- HIGH HDD USAGE!: Plug 'ludovicchabant/vim-gutentags'
--- Plug 'honza/vim-snippets'
-Plug('filipdutescu/renamer.nvim', {['branch'] = 'master' })
--- Plug 'shmargum/vim-sass-colors';
-Plug 'whiteinge/diffconflicts';
-Plug 'Pocco81/AutoSave.nvim';
-Plug 'abecodes/tabout.nvim';
-Plug 'airblade/vim-gitgutter';
-Plug 'preservim/tagbar';
-Plug 'mhinz/vim-startify';
+
+
+--------------------------------------------------------------------------------
+-- File-specific plugins
+--------------------------------------------------------------------------------
+
+-- *.md
+Plug(
+'iamcco/markdown-preview.nvim', {
+        ['do'] = vim.fn['mkdp#util#install()'],
+        ['for'] = {'markdown', 'vim-plug'}
+}
+)
+
+-- *.dockerfile
 Plug 'ekalinin/Dockerfile.vim'
+
+
+
 vim.call('plug#end')
 
