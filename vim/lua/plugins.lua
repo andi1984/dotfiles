@@ -46,6 +46,7 @@ Plug 'neovim/nvim-lsp'
 Plug 'neovim/nvim-lspconfig'
 Plug 'dense-analysis/ale'
 Plug 'folke/trouble.nvim'
+Plug 'j-hui/fidget.nvim'
 
 --------------------------------------------------------------------------------
 -- Footer
