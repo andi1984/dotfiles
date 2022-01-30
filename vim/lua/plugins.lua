@@ -12,7 +12,6 @@ Plug 'junegunn/vim-easy-align'
 Plug('filipdutescu/renamer.nvim', {['branch'] = 'master' })
 Plug 'Pocco81/AutoSave.nvim';
 Plug 'abecodes/tabout.nvim';
-Plug 'lukas-reineke/indent-blankline.nvim'
 
 --------------------------------------------------------------------------------
 -- Git
