@@ -14,8 +14,8 @@ vim.api.nvim_set_keymap('v', '<S-Up>',  ':m\'<-2<CR>gv=gv', { noremap = true, si
 vim.api.nvim_set_keymap('n', '<Leader>c', ':Commentary<CR>', { noremap = true, silent = true })
 
 -- TroubleToggle
-vim.api.nvim_set_keymap('n', '<Leader>xx', '<cmd>Trouble<cr>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<Leader>xd', [[<Cmd>lua vim.diagnostic.show_line_diagnostics()<CR>]], { noremap = true, silent = true })
+-- using "d"(iagnosis) "l"ist as a reminder for this shortcut (cf. lsp bindings)
+vim.api.nvim_set_keymap('n', '<Leader>dl', '<cmd>Trouble<cr>', { noremap = true, silent = true })
 
 -- Relative file name
 vim.api.nvim_set_keymap('n', '<Leader>rf', ':echo fnamemodify(expand("%"), ":~:.")<CR>', { noremap = true, silent = true})
