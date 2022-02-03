@@ -10,3 +10,6 @@ nnoremap <Leader>tn :tabnext<CR>
 nnoremap <Leader>tp :tabprev<CR>
 nnoremap <Leader>tc :tabnew<CR>
 nnoremap <Leader>td :tabclose<CR>
+
+" Auto-indent whole file (https://stackoverflow.com/a/42124544)
+nmap <leader>ai mzgg=G`z
