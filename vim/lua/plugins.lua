@@ -31,8 +31,8 @@ Plug 'nvim-telescope/telescope-fzy-native.nvim'
 -- Themes
 --------------------------------------------------------------------------------
 Plug 'kyazdani42/nvim-web-devicons'
-Plug 'jacoborus/tender.vim'
-Plug 'mhartington/oceanic-next'
+Plug 'tjdevries/colorbuddy.vim'
+Plug 'tjdevries/gruvbuddy.nvim'
 
 --------------------------------------------------------------------------------
 -- FZF

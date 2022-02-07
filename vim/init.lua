@@ -24,6 +24,4 @@ require('keymap')
 require('plugins')
 
 -- Plugin related
-cmd 'colorscheme OceanicNext'
--- cmd 'colorscheme tender'
--- cmd 'colorscheme catppuccin'
+require('colorbuddy').colorscheme('gruvbuddy')
