@@ -20,8 +20,8 @@ vim.api.nvim_command('silent noswapfile')
 -- All the rest
 require('opts')
 require('sets')
-require('plugins')
 require('keymap')
+require('plugins')
 
 -- Plugin related
 cmd 'colorscheme OceanicNext'
