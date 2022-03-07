@@ -71,7 +71,7 @@ Plug('styled-components/vim-styled-components', { ['branch'] = 'main' })
 Plug 'AndrewRadev/tagalong.vim'
 Plug 'nelsyeung/twig.vim'
 Plug 'David-Kunz/jester'
--- Plug 'ap/vim-css-color'
+Plug 'ap/vim-css-color'
 Plug( 'kristijanhusak/vim-js-file-import', {['do'] = vim.fn['npm install']})
 Plug 'jelera/vim-javascript-syntax';
 
