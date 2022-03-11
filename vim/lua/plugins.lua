@@ -59,6 +59,8 @@ Plug 'vim-airline/vim-airline-themes'
 -- Treesitter
 --------------------------------------------------------------------------------
 Plug ('nvim-treesitter/nvim-treesitter', {['do'] = vim.fn[':TSUpdate']})  -- We recommend updating the parsers on update
+Plug 'romgrk/nvim-treesitter-context'
+
 
 --------------------------------------------------------------------------------
 -- WebDev plugins
@@ -82,7 +84,7 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'ThePrimeagen/refactoring.nvim'
-Plug 'wellle/context.vim'
+-- Plug 'wellle/context.vim'
 Plug 'github/copilot.vim'
 
 --------------------------------------------------------------------------------
