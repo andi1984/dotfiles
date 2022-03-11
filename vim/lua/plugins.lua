@@ -116,6 +116,9 @@ Plug 'Shougo/neosnippet.vim'
 Plug 'Shougo/neosnippet-snippets'
 
 
+Plug 'simrat39/symbols-outline.nvim'
+
+
 
 --------------------------------------------------------------------------------
 -- File-specific plugins
