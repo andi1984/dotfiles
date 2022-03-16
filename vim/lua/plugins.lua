@@ -34,6 +34,8 @@ Plug 'kyazdani42/nvim-web-devicons'
 Plug 'tjdevries/colorbuddy.vim'
 Plug 'tjdevries/gruvbuddy.nvim'
 
+Plug 'stevearc/dressing.nvim'
+
 --------------------------------------------------------------------------------
 -- FZF
 --------------------------------------------------------------------------------
