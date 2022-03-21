@@ -44,13 +44,6 @@ require('dressing').setup({
     -- Priority list of preferred vim.select implementations
     backend = { "telescope", "fzf_lua", "fzf", "builtin", "nui" },
 
-    -- Options for telescope selector
-    telescope = {
-      -- can be 'dropdown', 'cursor', or 'ivy'
-      -- or you can use a configuration directly:
-      -- theme = require('telescope.themes').get_ivy({...})
-      theme = "dropdown",
-    },
 
     -- Options for fzf selector
     fzf = {
