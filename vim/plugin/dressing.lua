@@ -44,7 +44,6 @@ require('dressing').setup({
     -- Priority list of preferred vim.select implementations
     backend = { "telescope", "fzf_lua", "fzf", "builtin", "nui" },
 
-
     -- Options for fzf selector
     fzf = {
       window = {

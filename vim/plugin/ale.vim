@@ -33,6 +33,7 @@ let g:ale_fixers = {
 \   'typescript': ['prettier'],
 \   'typescriptreact': ['prettier'],
 \   'css': ['prettier'],
+\   'vue': ['prettier'],
 \}
 
 let g:ale_fix_on_save = 1
