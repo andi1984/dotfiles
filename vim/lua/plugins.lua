@@ -88,6 +88,7 @@ Plug 'tpope/vim-fugitive'
 Plug 'ThePrimeagen/refactoring.nvim'
 -- Plug 'wellle/context.vim'
 Plug 'github/copilot.vim'
+Plug 'mhinz/vim-grepper'
 
 --------------------------------------------------------------------------------
 -- Autocomplete
