@@ -127,14 +127,6 @@ Plug 'simrat39/symbols-outline.nvim'
 -- File-specific plugins
 --------------------------------------------------------------------------------
 
--- *.md
-Plug(
-'iamcco/markdown-preview.nvim', {
-        ['do'] = vim.fn['mkdp#util#install()'],
-        ['for'] = {'markdown', 'vim-plug'}
-}
-)
-
 -- *.dockerfile
 Plug 'ekalinin/Dockerfile.vim'
 
