@@ -18,10 +18,10 @@ cmd 'autocmd CmdlineLeave /,? :set nohlsearch'
 vim.api.nvim_command('silent noswapfile')
 
 -- All the rest
-require('opts')
-require('sets')
-require('keymap')
 require('plugins')
+require('keymap')
+require('sets')
+require('opts')
 
 -- Plugin related
 require('colorbuddy').colorscheme('gruvbuddy')

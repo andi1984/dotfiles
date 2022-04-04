@@ -6,5 +6,4 @@ vim.api.nvim_command('set updatetime=300')
 vim.api.nvim_command('set shortmess+=c')
 vim.api.nvim_command('set colorcolumn=80')
 vim.api.nvim_command('set termguicolors')
-
-
+vim.api.nvim_command('set conceallevel=0')
