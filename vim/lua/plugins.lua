@@ -87,7 +87,7 @@ Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'ThePrimeagen/refactoring.nvim'
 -- Plug 'wellle/context.vim'
-Plug 'github/copilot.vim'
+-- Plug 'github/copilot.vim'
 Plug 'mhinz/vim-grepper'
 
 --------------------------------------------------------------------------------
@@ -101,11 +101,13 @@ Plug 'vim-denops/denops.vim'
 -- Install your sources
 Plug 'Shougo/ddc-around'
 Plug 'statiolake/ddc-ale'
-Plug 'LumaKernel/ddc-tabnine'
+-- Plug 'LumaKernel/ddc-tabnine'
 Plug 'Shougo/ddc-nvim-lsp'
 Plug 'LumaKernel/ddc-file'
 Plug 'matsui54/ddc-buffer'
 Plug 'delphinus/ddc-treesitter'
+Plug 'tani/ddc-git'
+Plug 'Shougo/ddc-rg'
 
 -- Install your filters
 Plug 'Shougo/ddc-matcher_head'

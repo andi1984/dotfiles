@@ -1,7 +1,8 @@
 " Customize global settings
 " Use around source.
 " https://github.com/Shougo/ddc-around
-call ddc#custom#patch_global('sources', ['around', 'ale', 'tabnine', 'nvim-lsp', 'file', 'buffer', 'treesitter'])
+" call ddc#custom#patch_global('sources', ['around', 'ale', 'tabnine', 'nvim-lsp', 'file', 'buffer', 'treesitter'])
+call ddc#custom#patch_global('sources', ['around', 'ale', 'nvim-lsp', 'file', 'buffer', 'treesitter', "git-file", "git-commit", "git-branch", "rg"])
 
 " Use matcher_head and sorter_rank.
 " https://github.com/Shougo/ddc-matcher_head
@@ -31,12 +32,12 @@ call ddc#custom#patch_filetype('markdown', 'sourceParams', {
       \ })
 
 " Tabnine
-call ddc#custom#patch_global('sourceOptions', {
-    \ 'tabnine': {
-    \   'mark': 'TN',
-    \   'maxCandidates': 5,
-    \   'isVolatile': v:true,
-    \ }})
+" call ddc#custom#patch_global('sourceOptions', {
+    " \ 'tabnine': {
+    " \   'mark': 'TN',
+    " \   'maxCandidates': 5,
+    " \   'isVolatile': v:true,
+    " \ }})
 
 " LSP
 call ddc#custom#patch_global('sourceOptions', {
