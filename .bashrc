@@ -176,5 +176,8 @@ export SCM_CHECK=true
 # Uncomment this to make Bash-it create alias reload.
 # export BASH_IT_RELOAD_LEGACY=1
 
+bind 'set show-all-if-ambiguous on'
+bind 'TAB:menu-complete'
+
 # Load Bash It
 source "$BASH_IT"/bash_it.sh
