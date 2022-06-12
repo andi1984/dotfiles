@@ -97,6 +97,7 @@ Plug 'mhinz/vim-grepper'
 -- Autocompletion Start
 Plug 'Shougo/ddc.vim'
 Plug 'vim-denops/denops.vim'
+Plug 'Shougo/ddu.vim'
 
 -- Install your sources
 Plug 'Shougo/ddc-around'
