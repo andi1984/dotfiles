@@ -114,6 +114,8 @@ Plug 'Shougo/ddc-matcher_head'
 Plug 'Shougo/ddc-sorter_rank'
 -- Autocompletion End
 
+Plug 'johmsalas/text-case.nvim'
+
 --------------------------------------------------------------------------------
 -- Snippets
 --------------------------------------------------------------------------------
