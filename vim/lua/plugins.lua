@@ -78,6 +78,7 @@ Plug 'David-Kunz/jester'
 -- Plug 'ap/vim-css-color'
 Plug( 'kristijanhusak/vim-js-file-import', {['do'] = vim.fn['npm install']})
 Plug 'jelera/vim-javascript-syntax';
+Plug 'jparise/vim-graphql';
 
 --------------------------------------------------------------------------------
 -- Utilty stuff
