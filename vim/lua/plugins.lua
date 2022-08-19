@@ -10,7 +10,7 @@ Plug 'norcalli/nvim-colorizer.lua'
 Plug 'folke/which-key.nvim'
 Plug 'junegunn/vim-easy-align'
 Plug('filipdutescu/renamer.nvim', {['branch'] = 'master' })
-Plug 'Pocco81/AutoSave.nvim';
+-- Plug 'Pocco81/AutoSave.nvim'; NOTE: Buggy right now
 Plug 'abecodes/tabout.nvim';
 Plug 'editorconfig/editorconfig-vim'
 
