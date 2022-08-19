@@ -32,9 +32,9 @@ Plug 'nvim-telescope/telescope-fzy-native.nvim'
 --------------------------------------------------------------------------------
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'tjdevries/colorbuddy.vim'
-Plug 'tjdevries/gruvbuddy.nvim'
-
 Plug 'stevearc/dressing.nvim'
+-- Plug 'tjdevries/gruvbuddy.nvim'
+Plug 'Th3Whit3Wolf/onebuddy'
 
 --------------------------------------------------------------------------------
 -- FZF
