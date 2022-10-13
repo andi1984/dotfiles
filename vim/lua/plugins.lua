@@ -117,6 +117,7 @@ Plug 'Shougo/ddc-sorter_rank'
 -- Autocompletion End
 
 Plug 'johmsalas/text-case.nvim'
+Plug 'nikvdp/ejs-syntax'
 
 --------------------------------------------------------------------------------
 -- Snippets
