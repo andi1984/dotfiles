@@ -31,3 +31,9 @@ xmap <Leader>R
     \ gvgr
     \ :cfdo %s/<C-r>s//g \| update
      \<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>
+
+
+" Copy to clipboard
+" https://vi.stackexchange.com/a/96
+noremap <Leader>y "*y
+noremap <Leader>p "*p
