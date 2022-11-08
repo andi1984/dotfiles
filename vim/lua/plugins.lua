@@ -100,6 +100,9 @@ Plug 'Shougo/ddc.vim'
 Plug 'vim-denops/denops.vim'
 Plug 'Shougo/ddu.vim'
 
+-- Install your UI
+Plug 'Shougo/ddc-ui-pum'
+
 -- Install your sources
 Plug 'Shougo/ddc-around'
 Plug 'statiolake/ddc-ale'

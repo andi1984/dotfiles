@@ -4,6 +4,9 @@
 " call ddc#custom#patch_global('sources', ['around', 'ale', 'tabnine', 'nvim-lsp', 'file', 'buffer', 'treesitter'])
 call ddc#custom#patch_global('sources', ['around', 'ale', 'nvim-lsp', 'file', 'buffer', 'treesitter', "git-file", "git-commit", "git-branch", "rg"])
 
+" Set UI
+call ddc#custom#patch_global('ui', 'pum')
+
 " Use matcher_head and sorter_rank.
 " https://github.com/Shougo/ddc-matcher_head
 " https://github.com/Shougo/ddc-sorter_rank
