@@ -30,7 +30,9 @@ Plug 'nvim-telescope/telescope-fzy-native.nvim'
 --------------------------------------------------------------------------------
 -- Themes
 --------------------------------------------------------------------------------
+Plug 'https://github.com/ryanoasis/vim-devicons'
 Plug 'kyazdani42/nvim-web-devicons'
+Plug 'adelarsq/vim-emoji-icon-theme'
 Plug 'tjdevries/colorbuddy.vim'
 Plug 'stevearc/dressing.nvim'
 -- Plug 'tjdevries/gruvbuddy.nvim'
