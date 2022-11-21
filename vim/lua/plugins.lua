@@ -123,7 +123,7 @@ Plug 'Shougo/ddc-sorter_rank'
 
 Plug 'johmsalas/text-case.nvim'
 Plug 'nikvdp/ejs-syntax'
--- Plug 'folke/todo-comments.nvim'
+Plug 'folke/todo-comments.nvim'
 
 --------------------------------------------------------------------------------
 -- Snippets
