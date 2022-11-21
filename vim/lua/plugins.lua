@@ -134,7 +134,7 @@ Plug 'Shougo/neosnippet-snippets'
 
 Plug 'simrat39/symbols-outline.nvim'
 Plug 'justinmk/vim-sneak'
-
+Plug 'wuelnerdotexe/vim-astro'
 
 --------------------------------------------------------------------------------
 -- File-specific plugins
