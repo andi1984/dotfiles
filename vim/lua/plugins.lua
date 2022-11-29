@@ -13,7 +13,7 @@ Plug('filipdutescu/renamer.nvim', {['branch'] = 'master' })
 -- Plug 'Pocco81/AutoSave.nvim'; NOTE: Buggy right now
 Plug 'abecodes/tabout.nvim';
 Plug 'editorconfig/editorconfig-vim'
-
+Plug 'lukas-reineke/indent-blankline.nvim'
 --------------------------------------------------------------------------------
 -- Git
 --------------------------------------------------------------------------------
