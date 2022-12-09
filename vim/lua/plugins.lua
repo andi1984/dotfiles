@@ -112,8 +112,8 @@ Plug 'statiolake/ddc-ale'
 Plug 'Shougo/ddc-nvim-lsp'
 Plug 'LumaKernel/ddc-file'
 Plug 'matsui54/ddc-buffer'
--- Plug 'delphinus/ddc-treesitter'
--- Plug 'tani/ddc-git'
+Plug 'delphinus/ddc-treesitter'
+Plug 'tani/ddc-git'
 Plug 'Shougo/ddc-rg'
 
 -- Install your filters
