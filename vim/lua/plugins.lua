@@ -98,28 +98,11 @@ Plug 'mhinz/vim-grepper'
 --------------------------------------------------------------------------------
 
 -- Autocompletion Start
-Plug 'Shougo/ddc.vim'
-Plug 'vim-denops/denops.vim'
-Plug 'Shougo/ddu.vim'
-
--- Install your UI
-Plug 'Shougo/pum.vim'
-Plug 'Shougo/ddc-ui-pum'
-
--- Install your sources
-Plug 'Shougo/ddc-around'
-Plug 'statiolake/ddc-ale'
--- Plug 'LumaKernel/ddc-tabnine'
-Plug 'Shougo/ddc-nvim-lsp'
-Plug 'LumaKernel/ddc-file'
-Plug 'matsui54/ddc-buffer'
-Plug 'delphinus/ddc-treesitter'
-Plug 'tani/ddc-git'
-Plug 'Shougo/ddc-rg'
-
--- Install your filters
-Plug 'Shougo/ddc-matcher_head'
-Plug 'Shougo/ddc-sorter_rank'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-cmdline'
+Plug 'hrsh7th/nvim-cmp'
 -- Autocompletion End
 
 Plug 'johmsalas/text-case.nvim'
@@ -128,9 +111,9 @@ Plug 'nikvdp/ejs-syntax'
 
 --------------------------------------------------------------------------------
 -- Snippets
+Plug 'hrsh7th/cmp-vsnip'
+Plug 'hrsh7th/vim-vsnip'
 --------------------------------------------------------------------------------
-Plug 'Shougo/neosnippet.vim'
-Plug 'Shougo/neosnippet-snippets'
 
 
 Plug 'simrat39/symbols-outline.nvim'
