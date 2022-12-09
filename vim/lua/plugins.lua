@@ -103,6 +103,7 @@ Plug 'vim-denops/denops.vim'
 Plug 'Shougo/ddu.vim'
 
 -- Install your UI
+Plug 'Shougo/pum.vim'
 Plug 'Shougo/ddc-ui-pum'
 
 -- Install your sources
