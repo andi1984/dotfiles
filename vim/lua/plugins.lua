@@ -90,7 +90,7 @@ Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'ThePrimeagen/refactoring.nvim'
 -- Plug 'wellle/context.vim'
--- Plug 'github/copilot.vim'
+Plug 'github/copilot.vim'
 Plug 'mhinz/vim-grepper'
 
 --------------------------------------------------------------------------------
