@@ -63,7 +63,7 @@ Plug 'vim-airline/vim-airline-themes'
 -- Treesitter
 --------------------------------------------------------------------------------
 Plug ('nvim-treesitter/nvim-treesitter', {['do'] = vim.fn[':TSUpdate']})  -- We recommend updating the parsers on update
-Plug 'romgrk/nvim-treesitter-context'
+-- Plug 'romgrk/nvim-treesitter-context'
 
 
 --------------------------------------------------------------------------------
