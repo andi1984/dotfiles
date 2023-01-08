@@ -1,3 +1,4 @@
+let g:fzf_preview_window = 'down:70%'
 " ripgrep
 if executable('rg')
 	let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --glob "!.git/*"'
