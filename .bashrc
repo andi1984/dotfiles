@@ -181,3 +181,4 @@ bind 'TAB:menu-complete'
 
 # Load Bash It
 source "$BASH_IT"/bash_it.sh
+. "$HOME/.cargo/env"
