@@ -81,6 +81,7 @@ Plug 'David-Kunz/jester'
 Plug( 'kristijanhusak/vim-js-file-import', {['do'] = vim.fn['npm install']})
 Plug 'jelera/vim-javascript-syntax';
 Plug 'jparise/vim-graphql';
+Plug 'eslint/eslint';
 
 --------------------------------------------------------------------------------
 -- Utilty stuff
