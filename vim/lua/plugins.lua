@@ -120,6 +120,7 @@ Plug 'hrsh7th/vim-vsnip'
 Plug 'simrat39/symbols-outline.nvim'
 Plug 'justinmk/vim-sneak'
 Plug 'wuelnerdotexe/vim-astro'
+Plug 'zbirenbaum/neodim'
 
 --------------------------------------------------------------------------------
 -- File-specific plugins
