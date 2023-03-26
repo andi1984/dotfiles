@@ -129,7 +129,8 @@ Plug 'zbirenbaum/neodim'
 -- *.dockerfile
 Plug 'ekalinin/Dockerfile.vim'
 
-
+-- *.rs
+Plug 'rust-lang/rust.vim'
 
 vim.call('plug#end')
 

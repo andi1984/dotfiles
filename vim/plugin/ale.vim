@@ -25,6 +25,7 @@ let g:ale_linters = {
 \   'javascriptreact': ['eslint', 'stylelint'],
 \   'typescript': ['eslint', 'typecheck'],
 \   'typescriptreact': ['eslint', 'typecheck', 'stylelint'],
+\   'rust': ['analyzer'],
 \}
 
 let g:ale_fixers = {
@@ -34,6 +35,7 @@ let g:ale_fixers = {
 \   'typescriptreact': ['prettier'],
 \   'css': ['prettier'],
 \   'vue': ['prettier'],
+\   'rust': ['rustfmt'],
 \}
 
 let g:ale_fix_on_save = 1
