@@ -179,6 +179,14 @@ export SCM_CHECK=true
 bind 'set show-all-if-ambiguous on'
 bind 'TAB:menu-complete'
 
+echo "Source cargo"
+export PATH="~/snap/rustup/common/rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin:$PATH"
+
 # Load Bash It
 source "$BASH_IT"/bash_it.sh
-. "$HOME/.cargo/env"
+
+PATH="/home/andreas/perl5/bin${PATH:+:${PATH}}"; export PATH;
+PERL5LIB="/home/andreas/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LIB;
+PERL_LOCAL_LIB_ROOT="/home/andreas/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
+PERL_MB_OPT="--install_base \"/home/andreas/perl5\""; export PERL_MB_OPT;
+PERL_MM_OPT="INSTALL_BASE=/home/andreas/perl5"; export PERL_MM_OPT;
