@@ -76,6 +76,7 @@ done
 # load everything but the path and completion files
 for file in ${${config_files:#*/path.zsh}:#*/completion.zsh}
 do
+  echo $file
   source $file
 done
 unset config_files
@@ -91,3 +92,5 @@ export DENO_INSTALL="/Users/andreassander/.deno"
 export PATH="$DENO_INSTALL/bin:$PATH"
 
 export PATH="$HOME/.poetry/bin:$PATH"
+
+source /Users/andreassander/.docker/init-zsh.sh || true # Added by Docker Desktop
