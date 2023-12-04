@@ -47,6 +47,7 @@ Plug 'junegunn/fzf.vim'
 --------------------------------------------------------------------------------
 -- LSP & Linting
 --------------------------------------------------------------------------------
+Plug 'williamboman/nvim-lsp-installer'
 Plug 'neovim/nvim-lsp'
 Plug 'neovim/nvim-lspconfig'
 Plug 'dense-analysis/ale'
