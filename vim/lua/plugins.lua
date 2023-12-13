@@ -10,7 +10,6 @@ Plug 'norcalli/nvim-colorizer.lua'
 Plug 'folke/which-key.nvim'
 Plug 'junegunn/vim-easy-align'
 Plug('filipdutescu/renamer.nvim', {['branch'] = 'master' })
--- Plug 'Pocco81/AutoSave.nvim'; NOTE: Buggy right now
 Plug 'abecodes/tabout.nvim';
 Plug 'editorconfig/editorconfig-vim'
 Plug 'lukas-reineke/indent-blankline.nvim'
@@ -32,11 +31,7 @@ Plug 'nvim-telescope/telescope-fzy-native.nvim'
 --------------------------------------------------------------------------------
 Plug 'https://github.com/ryanoasis/vim-devicons'
 Plug 'kyazdani42/nvim-web-devicons'
-Plug 'adelarsq/vim-emoji-icon-theme'
-Plug 'tjdevries/colorbuddy.vim'
 Plug 'stevearc/dressing.nvim'
--- Plug 'tjdevries/gruvbuddy.nvim'
-Plug 'Th3Whit3Wolf/onebuddy'
 
 --------------------------------------------------------------------------------
 -- FZF
@@ -78,11 +73,12 @@ Plug('styled-components/vim-styled-components', { ['branch'] = 'main' })
 Plug 'AndrewRadev/tagalong.vim'
 Plug 'nelsyeung/twig.vim'
 Plug 'David-Kunz/jester'
--- Plug 'ap/vim-css-color'
+Plug 'ap/vim-css-color'
 Plug( 'kristijanhusak/vim-js-file-import', {['do'] = vim.fn['npm install']})
 Plug 'jelera/vim-javascript-syntax';
 Plug 'jparise/vim-graphql';
 Plug 'eslint/eslint';
+Plug 'wuelnerdotexe/vim-astro'
 
 --------------------------------------------------------------------------------
 -- Utilty stuff
@@ -91,8 +87,6 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'ThePrimeagen/refactoring.nvim'
--- Plug 'wellle/context.vim'
--- Plug 'github/copilot.vim'
 Plug 'mhinz/vim-grepper'
 
 --------------------------------------------------------------------------------
@@ -109,7 +103,7 @@ Plug 'hrsh7th/nvim-cmp'
 
 Plug 'johmsalas/text-case.nvim'
 Plug 'nikvdp/ejs-syntax'
--- Plug 'folke/todo-comments.nvim'
+Plug 'folke/todo-comments.nvim'
 
 --------------------------------------------------------------------------------
 -- Snippets
@@ -120,7 +114,6 @@ Plug 'hrsh7th/vim-vsnip'
 
 Plug 'simrat39/symbols-outline.nvim'
 Plug 'justinmk/vim-sneak'
-Plug 'wuelnerdotexe/vim-astro'
 Plug 'zbirenbaum/neodim'
 
 --------------------------------------------------------------------------------

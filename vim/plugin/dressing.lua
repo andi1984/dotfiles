@@ -4,7 +4,7 @@ require('dressing').setup({
     enabled = true,
 
     -- Default prompt string
-    default_prompt = "➤ ",
+    default_prompt = "hello ",
 
     -- When true, <Esc> will close the modal
     insert_only = true,

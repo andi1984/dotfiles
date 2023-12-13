@@ -24,5 +24,3 @@ require('sets')
 require('opts')
 
 -- Plugin related
--- require('colorbuddy').colorscheme('gruvbuddy')
-require'colorbuddy'.colorscheme("onebuddy")
