@@ -24,3 +24,4 @@ require('sets')
 require('opts')
 
 -- Plugin related
+vim.cmd [[colorscheme solarized-osaka]]

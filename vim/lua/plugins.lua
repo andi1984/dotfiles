@@ -32,7 +32,7 @@ Plug 'nvim-telescope/telescope-fzy-native.nvim'
 Plug 'https://github.com/ryanoasis/vim-devicons'
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'stevearc/dressing.nvim'
-
+Plug 'craftzdog/solarized-osaka.nvim'
 --------------------------------------------------------------------------------
 -- FZF
 --------------------------------------------------------------------------------
