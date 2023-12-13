@@ -32,6 +32,7 @@ Plug 'nvim-telescope/telescope-fzy-native.nvim'
 Plug 'https://github.com/ryanoasis/vim-devicons'
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'stevearc/dressing.nvim'
+Plug 'folke/tokyonight.nvim'
 Plug 'craftzdog/solarized-osaka.nvim'
 --------------------------------------------------------------------------------
 -- FZF
@@ -113,7 +114,7 @@ Plug 'hrsh7th/vim-vsnip'
 
 
 Plug 'simrat39/symbols-outline.nvim'
-Plug 'justinmk/vim-sneak'
+-- Plug 'justinmk/vim-sneak'
 Plug 'zbirenbaum/neodim'
 
 --------------------------------------------------------------------------------
