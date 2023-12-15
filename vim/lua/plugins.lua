@@ -127,5 +127,8 @@ Plug 'ekalinin/Dockerfile.vim'
 -- *.rs
 Plug 'rust-lang/rust.vim'
 
+-- *.go
+Plug 'ray-x/go.nvim'
+
 vim.call('plug#end')
 
