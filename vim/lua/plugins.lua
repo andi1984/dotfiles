@@ -129,6 +129,7 @@ Plug 'rust-lang/rust.vim'
 
 -- *.go
 Plug 'ray-x/go.nvim'
+Plug 'charlespascoe/vim-go-syntax'
 
 vim.call('plug#end')
 
