@@ -17,6 +17,7 @@ Plug 'lukas-reineke/indent-blankline.nvim'
 -- Git
 --------------------------------------------------------------------------------
 Plug 'whiteinge/diffconflicts';
+Plug 'akinsho/git-conflict.nvim';
 Plug 'airblade/vim-gitgutter';
 
 --------------------------------------------------------------------------------
