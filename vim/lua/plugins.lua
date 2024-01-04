@@ -35,6 +35,8 @@ Plug 'kyazdani42/nvim-web-devicons'
 Plug 'stevearc/dressing.nvim'
 Plug 'folke/tokyonight.nvim'
 Plug 'craftzdog/solarized-osaka.nvim'
+Plug 'EdenEast/nightfox.nvim'
+
 --------------------------------------------------------------------------------
 -- FZF
 --------------------------------------------------------------------------------
