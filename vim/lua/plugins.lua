@@ -118,7 +118,7 @@ Plug 'hrsh7th/vim-vsnip'
 
 Plug 'simrat39/symbols-outline.nvim'
 -- Plug 'justinmk/vim-sneak'
-Plug 'zbirenbaum/neodim'
+-- Plug 'zbirenbaum/neodim'
 
 --------------------------------------------------------------------------------
 -- File-specific plugins
