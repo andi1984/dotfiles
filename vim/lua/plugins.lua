@@ -37,7 +37,7 @@ Plug 'folke/tokyonight.nvim'
 Plug 'craftzdog/solarized-osaka.nvim'
 Plug 'EdenEast/nightfox.nvim'
 
-Plug 'folke/noice.nvim'
+-- Plug 'folke/noice.nvim'
 Plug 'MunifTanjim/nui.nvim'
 
 --------------------------------------------------------------------------------
