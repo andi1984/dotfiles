@@ -86,6 +86,7 @@ Plug 'jelera/vim-javascript-syntax';
 Plug 'jparise/vim-graphql';
 Plug 'eslint/eslint';
 Plug 'wuelnerdotexe/vim-astro'
+Plug 'vuki656/package-info.nvim'
 
 --------------------------------------------------------------------------------
 -- Utilty stuff
