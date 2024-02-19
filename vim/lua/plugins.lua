@@ -19,6 +19,7 @@ Plug 'lukas-reineke/indent-blankline.nvim'
 Plug 'sindrets/diffview.nvim';
 Plug 'akinsho/git-conflict.nvim';
 Plug 'airblade/vim-gitgutter';
+Plug 'lewis6991/gitsigns.nvim';
 
 --------------------------------------------------------------------------------
 -- Telescope Fuzzy Finder
@@ -141,6 +142,9 @@ Plug 'rust-lang/rust.vim'
 -- *.go
 Plug 'ray-x/go.nvim'
 Plug 'charlespascoe/vim-go-syntax'
+
+-- *.md
+Plug ('iamcco/markdown-preview.nvim', { ['do'] = function() vim.fn['mkdp#util#install']() end, ['for'] = 'markdown' })
 
 vim.call('plug#end')
 
