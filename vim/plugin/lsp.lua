@@ -62,7 +62,7 @@ nvim_lsp.rust_analyzer.setup {
 
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
-local servers = { 'pylsp', 'vuels', 'tailwindcss', 'gopls', 'ocamllsp' }
+local servers = { 'pylsp', 'vuels', 'tailwindcss' }
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup {
     on_attach = on_attach,
@@ -71,18 +71,3 @@ for _, lsp in ipairs(servers) do
     }
   }
 end
-
--- Custom setups
-
-nvim_lsp.tsserver.setup {
-    cmd = { "typescript-language-server", "--stdio" },
-    filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" },
-    init_options = {
-      hostInfo = "neovim"
-    },
-    root_dir = nvim_lsp.util.root_pattern("package.json", "tsconfig.json", "jsconfig.json", ".git"),
-    on_attach = on_attach,
-    flags = {
-            debounce_text_changes = 150,
-    },
-}
