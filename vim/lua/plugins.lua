@@ -32,6 +32,7 @@ Plug 'nvim-telescope/telescope-fzy-native.nvim'
 --------------------------------------------------------------------------------
 -- Themes
 --------------------------------------------------------------------------------
+Plug 'echasnovski/mini.icons'
 Plug 'https://github.com/ryanoasis/vim-devicons'
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'stevearc/dressing.nvim'
