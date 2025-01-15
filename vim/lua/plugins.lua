@@ -126,7 +126,7 @@ Plug 'hrsh7th/vim-vsnip'
 --------------------------------------------------------------------------------
 
 
-Plug 'Exafunction/codeium.vim'
+-- Plug 'Exafunction/codeium.vim'
 
 Plug 'simrat39/symbols-outline.nvim'
 -- Plug 'justinmk/vim-sneak'
