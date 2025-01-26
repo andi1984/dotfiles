@@ -21,6 +21,7 @@ Plug 'akinsho/git-conflict.nvim';
 Plug 'airblade/vim-gitgutter';
 Plug 'lewis6991/gitsigns.nvim';
 Plug 'github/copilot.vim';
+Plug 'CopilotC-Nvim/CopilotChat.nvim';
 
 --------------------------------------------------------------------------------
 -- Telescope Fuzzy Finder
