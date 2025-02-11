@@ -25,4 +25,6 @@ require('opts')
 
 -- Plugin related
 -- vim.cmd [[colorscheme solarized-osaka]]
-vim.cmd [[colorscheme nightfox]]
+-- vim.cmd [[colorscheme nightfox]]
+-- vim.cmd [[colorscheme everforest]]
+vim.cmd [[colorscheme evergarden]]

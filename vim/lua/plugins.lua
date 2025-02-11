@@ -40,6 +40,8 @@ Plug 'stevearc/dressing.nvim'
 Plug 'folke/tokyonight.nvim'
 Plug 'craftzdog/solarized-osaka.nvim'
 Plug 'EdenEast/nightfox.nvim'
+Plug('neanias/everforest-nvim', { ['branch'] = 'main' })
+Plug 'comfysage/evergarden'
 
 -- Plug 'folke/noice.nvim'
 Plug 'MunifTanjim/nui.nvim'
