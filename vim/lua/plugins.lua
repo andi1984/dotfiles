@@ -52,6 +52,7 @@ Plug 'MunifTanjim/nui.nvim'
 Plug('junegunn/fzf', {['do'] = vim.fn['fzf#install()']})
 Plug 'junegunn/fzf.vim'
 
+Plug 'bassamsdata/namu.nvim'
 --------------------------------------------------------------------------------
 -- LSP & Linting
 --------------------------------------------------------------------------------
