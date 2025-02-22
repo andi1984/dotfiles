@@ -2,7 +2,11 @@
       -- Enable the modules you want
       namu_symbols = {
         enable = true,
-        options = {}, -- here you can configure namu
+        options = {
+                display = {
+                mode = "text", -- "icon" or "text"
+                }
+        }
       },
       -- Optional: Enable other modules if needed
       colorscheme = {
