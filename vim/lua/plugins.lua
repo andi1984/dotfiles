@@ -103,7 +103,9 @@ Plug 'vuki656/package-info.nvim'
 -- Utilty stuff
 --------------------------------------------------------------------------------
 Plug 'tpope/vim-surround'
-Plug 'tpope/vim-commentary'
+-- Plug 'tpope/vim-commentary'
+Plug 'numToStr/Comment.nvim'
+Plug 'JoosepAlviste/nvim-ts-context-commentstring'
 Plug 'tpope/vim-fugitive'
 Plug 'ThePrimeagen/refactoring.nvim'
 Plug 'mhinz/vim-grepper'
