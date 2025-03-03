@@ -20,8 +20,14 @@ Plug 'sindrets/diffview.nvim';
 Plug 'akinsho/git-conflict.nvim';
 Plug 'airblade/vim-gitgutter';
 Plug 'lewis6991/gitsigns.nvim';
-Plug 'github/copilot.vim';
-Plug 'CopilotC-Nvim/CopilotChat.nvim';
+-- Plug 'github/copilot.vim';
+-- Plug 'CopilotC-Nvim/CopilotChat.nvim';
+
+--------------------------------------------------------------------------------
+--- avante
+Plug "zbirenbaum/copilot.lua"
+Plug 'HakonHarnes/img-clip.nvim'
+Plug ('yetone/avante.nvim', { ['branch'] = 'main', ['do'] = 'make' });
 
 --------------------------------------------------------------------------------
 -- Telescope Fuzzy Finder
