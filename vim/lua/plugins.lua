@@ -25,7 +25,7 @@ Plug 'lewis6991/gitsigns.nvim';
 
 --------------------------------------------------------------------------------
 --- avante
-Plug "zbirenbaum/copilot.lua"
+-- Plug "zbirenbaum/copilot.lua"
 Plug 'HakonHarnes/img-clip.nvim'
 Plug ('yetone/avante.nvim', { ['branch'] = 'main', ['do'] = 'make' });
 
@@ -62,7 +62,9 @@ Plug 'bassamsdata/namu.nvim'
 --------------------------------------------------------------------------------
 -- LSP & Linting
 --------------------------------------------------------------------------------
-Plug 'williamboman/nvim-lsp-installer'
+-- Plug 'williamboman/nvim-lsp-installer'
+Plug 'williamboman/mason.nvim'
+Plug 'williamboman/mason-lspconfig.nvim'
 Plug 'neovim/nvim-lsp'
 Plug 'neovim/nvim-lspconfig'
 
