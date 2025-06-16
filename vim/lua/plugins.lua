@@ -24,10 +24,11 @@ Plug 'lewis6991/gitsigns.nvim';
 
 --------------------------------------------------------------------------------
 --- avante
-Plug "zbirenbaum/copilot.lua"
+-- Plug "zbirenbaum/copilot.lua"
+Plug 'github/copilot.vim'
 Plug 'CopilotC-Nvim/CopilotChat.nvim';
 Plug 'HakonHarnes/img-clip.nvim'
-Plug ('yetone/avante.nvim', { ['branch'] = 'main', ['do'] = 'make' });
+-- Plug ('yetone/avante.nvim', { ['branch'] = 'main', ['do'] = 'make' });
 
 --------------------------------------------------------------------------------
 -- Telescope Fuzzy Finder
