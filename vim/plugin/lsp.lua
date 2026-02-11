@@ -34,7 +34,13 @@ vim.api.nvim_create_autocmd('LspAttach', {
 })
 
 -- LSP server configurations using Neovim 0.11 native vim.lsp.config
+-- NOTE: native vim.lsp.config does NOT provide default cmd/filetypes like
+-- nvim-lspconfig did — each server needs them explicitly.
+
 vim.lsp.config('rust_analyzer', {
+  cmd = { 'rust-analyzer' },
+  filetypes = { 'rust' },
+  root_markers = { 'Cargo.toml', 'rust-project.json', '.git' },
   settings = {
     ["rust-analyzer"] = {
       assist = {
@@ -55,14 +61,48 @@ vim.lsp.config('rust_analyzer', {
 })
 
 vim.lsp.config('denols', {
-  root_markers = { "deno.json", "deno.jsonc" },
+  cmd = { 'deno', 'lsp' },
+  filetypes = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' },
+  root_markers = { 'deno.json', 'deno.jsonc' },
 })
 
--- Simple servers with default config
-local servers = { 'pylsp', 'vuels', 'tailwindcss', 'gopls' }
-for _, server in ipairs(servers) do
-  vim.lsp.config(server, {})
-end
+vim.lsp.config('pylsp', {
+  cmd = { 'pylsp' },
+  filetypes = { 'python' },
+  root_markers = {
+    'pyproject.toml',
+    'setup.py',
+    'setup.cfg',
+    'requirements.txt',
+    'Pipfile',
+    'tox.ini',
+    '.git',
+  },
+})
+
+vim.lsp.config('gopls', {
+  cmd = { 'gopls' },
+  filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
+  root_markers = { 'go.work', 'go.mod', '.git' },
+})
+
+vim.lsp.config('vuels', {
+  cmd = { 'vls' },
+  filetypes = { 'vue' },
+  root_markers = { 'package.json', '.git' },
+})
+
+vim.lsp.config('tailwindcss', {
+  cmd = { 'tailwindcss-language-server', '--stdio' },
+  filetypes = {
+    'html', 'css', 'scss', 'javascript', 'javascriptreact',
+    'typescript', 'typescriptreact', 'vue', 'astro',
+  },
+  root_markers = {
+    'tailwind.config.js', 'tailwind.config.cjs', 'tailwind.config.mjs',
+    'tailwind.config.ts', 'postcss.config.js', '.git',
+  },
+})
 
 -- Enable all configured servers
-vim.lsp.enable({ 'rust_analyzer', 'denols', 'pylsp', 'vuels', 'tailwindcss', 'gopls' })
+vim.lsp.enable({ 'rust_analyzer', 'denols', 'pylsp', 'gopls', 'vuels', 'tailwindcss' })
