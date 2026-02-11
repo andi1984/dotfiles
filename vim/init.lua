@@ -15,8 +15,6 @@ window.wrap = false
 cmd 'autocmd CmdlineEnter /,? :set hlsearch'
 cmd 'autocmd CmdlineLeave /,? :set nohlsearch'
 
-vim.api.nvim_command('silent noswapfile')
-
 -- All the rest
 require('plugins')
 require('keymap')

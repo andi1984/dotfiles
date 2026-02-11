@@ -29,6 +29,3 @@ vim.api.nvim_set_keymap('n', '<Leader>jj',  [[<Cmd>lua require"jester".run_file(
 -- Select surrounding HTML tags
 vim.api.nvim_set_keymap('n', '<Leader>t',  'vat', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('v', '<Leader>tu',  'at', { noremap = true, silent = true })
-
--- Symbols outline
-vim.api.nvim_set_keymap('n', '<Leader>so',  ':SymbolsOutline<CR>', { noremap = true, silent = true })

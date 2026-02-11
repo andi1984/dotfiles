@@ -1,78 +1,68 @@
-local nvim_lsp = require('lspconfig')
+-- LSP keymaps applied when a language server attaches to a buffer
+vim.api.nvim_create_autocmd('LspAttach', {
+  callback = function(args)
+    local bufnr = args.buf
+    local opts = { buffer = bufnr, silent = true }
 
--- Use an on_attach function to only map the following keys
--- after the language server attaches to the current buffer
-local on_attach = function(client, bufnr)
-  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
-  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+    -- Navigation (some of these are Neovim 0.11 defaults, but explicit is fine)
+    vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+    vim.keymap.set('n', 'gt', vim.lsp.buf.type_definition, opts)
+    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
+    vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
 
-  -- Enable completion triggered by <c-x><c-o>
-  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+    -- Diagnostics
+    vim.keymap.set('n', '<Leader>dj', vim.diagnostic.goto_next, opts)
+    vim.keymap.set('n', '<Leader>dk', vim.diagnostic.goto_prev, opts)
+    vim.keymap.set('n', '<Leader>e', vim.diagnostic.open_float, opts)
 
-  -- Mappings.
-  local opts = { noremap=true, silent=true }
+    -- Actions
+    vim.keymap.set('n', '<Leader>rn', vim.lsp.buf.rename, opts)
+    vim.keymap.set('n', '<Leader>ca', vim.lsp.buf.code_action, opts)
+    vim.keymap.set('n', '<Leader>f', function() vim.lsp.buf.format({ async = true }) end, opts)
+    vim.keymap.set('n', '<Leader>q', vim.diagnostic.setloclist, opts)
 
-  -- See `:help vim.lsp.*` for documentation on any of the below functions
-  buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
-  buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  buf_set_keymap('n', 'gt', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  buf_set_keymap('n', '<Leader>dj', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
-  buf_set_keymap('n', '<Leader>dk', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
-  buf_set_keymap('n', '<Leader>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
-  buf_set_keymap('n', '<Leader>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+    -- Seldomly used
+    vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
+    vim.keymap.set('n', '<Leader>wa', vim.lsp.buf.add_workspace_folder, opts)
+    vim.keymap.set('n', '<Leader>wr', vim.lsp.buf.remove_workspace_folder, opts)
+    vim.keymap.set('n', '<Leader>wl', function()
+      print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+    end, opts)
+  end,
+})
 
+-- LSP server configurations using Neovim 0.11 native vim.lsp.config
+vim.lsp.config('rust_analyzer', {
+  settings = {
+    ["rust-analyzer"] = {
+      assist = {
+        importGranularity = "module",
+        importPrefix = "by_self",
+      },
+      cargo = {
+        loadOutDirsFromCheck = true,
+      },
+      procMacro = {
+        enable = true,
+      },
+      checkOnSave = {
+        command = "clippy",
+      },
+    },
+  },
+})
 
- -- Seldomely used
-  buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-  buf_set_keymap('n', '<Leader>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
-  buf_set_keymap('n', '<Leader>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
-  buf_set_keymap('n', '<Leader>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
-  buf_set_keymap('n', '<Leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-  buf_set_keymap('n', '<Leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
-  buf_set_keymap('n', '<Leader>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
-  buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+vim.lsp.config('denols', {
+  root_markers = { "deno.json", "deno.jsonc" },
+})
 
+-- Simple servers with default config
+local servers = { 'pylsp', 'vuels', 'tailwindcss', 'gopls' }
+for _, server in ipairs(servers) do
+  vim.lsp.config(server, {})
 end
 
-nvim_lsp.rust_analyzer.setup {
-        settings = {
-                ["rust-analyzer"] = {
-                        assist = {
-                                importGranularity = "module",
-                                importPrefix = "by_self"
-                        },
-                        cargo = {
-                                loadOutDirsFromCheck = true
-                        },
-                        procMacro = {
-                                enable = true
-                        },
-                        checkOnSave = {
-                                command = "clippy"
-                        }
-                }
-        },
-        on_attach = on_attach,
-        flags = {
-                debounce_text_changes = 150,
-        }
-}
-
--- Use a loop to conveniently call 'setup' on multiple servers and
--- map buffer local keybindings when the language server attaches
-local servers = { 'pylsp', 'vuels', 'tailwindcss', 'denols', 'gopls' }
-for _, lsp in ipairs(servers) do
-  nvim_lsp[lsp].setup {
-    on_attach = on_attach,
-    flags = {
-      debounce_text_changes = 150,
-    }
-  }
-end
-
-nvim_lsp.denols.setup {
-  on_attach = on_attach,
-  root_dir = nvim_lsp.util.root_pattern("deno.json", "deno.jsonc"),
-}
+-- Enable all configured servers
+vim.lsp.enable({ 'rust_analyzer', 'denols', 'pylsp', 'vuels', 'tailwindcss', 'gopls' })

@@ -56,7 +56,7 @@ Plug 'MunifTanjim/nui.nvim'
 --------------------------------------------------------------------------------
 -- FZF
 --------------------------------------------------------------------------------
-Plug('junegunn/fzf', {['do'] = vim.fn['fzf#install()']})
+Plug('junegunn/fzf', {['do'] = './install --all'})
 Plug 'junegunn/fzf.vim'
 
 Plug 'bassamsdata/namu.nvim'
@@ -66,7 +66,6 @@ Plug 'bassamsdata/namu.nvim'
 -- Plug 'williamboman/nvim-lsp-installer'
 Plug 'williamboman/mason.nvim'
 Plug 'williamboman/mason-lspconfig.nvim'
-Plug 'neovim/nvim-lsp'
 Plug 'neovim/nvim-lspconfig'
 
 Plug 'kyoh86/climbdir.nvim'
@@ -74,7 +73,7 @@ Plug 'pmizio/typescript-tools.nvim'
 
 Plug 'dense-analysis/ale'
 Plug 'folke/trouble.nvim'
-Plug('j-hui/fidget.nvim', {['tag']='legacy'})
+Plug 'j-hui/fidget.nvim'
 
 --------------------------------------------------------------------------------
 -- Footer
@@ -85,26 +84,21 @@ Plug 'vim-airline/vim-airline-themes'
 --------------------------------------------------------------------------------
 -- Treesitter
 --------------------------------------------------------------------------------
-Plug ('nvim-treesitter/nvim-treesitter', {['do'] = vim.fn[':TSUpdate']})  -- We recommend updating the parsers on update
+Plug ('nvim-treesitter/nvim-treesitter', {['do'] = ':TSUpdate'})  -- We recommend updating the parsers on update
 -- Plug 'romgrk/nvim-treesitter-context'
 
 
 --------------------------------------------------------------------------------
 -- WebDev plugins
 --------------------------------------------------------------------------------
-Plug 'yuezk/vim-js'
-Plug 'HerringtonDarkholme/yats.vim'
-Plug 'maxmellon/vim-jsx-pretty'
 Plug 'mattn/emmet-vim'
 Plug('styled-components/vim-styled-components', { ['branch'] = 'main' })
 Plug 'AndrewRadev/tagalong.vim'
 Plug 'nelsyeung/twig.vim'
 Plug 'David-Kunz/jester'
 -- Plug 'ap/vim-css-color'
-Plug( 'kristijanhusak/vim-js-file-import', {['do'] = vim.fn['npm install']})
-Plug 'jelera/vim-javascript-syntax';
+Plug( 'kristijanhusak/vim-js-file-import', {['do'] = 'npm install'})
 Plug 'jparise/vim-graphql';
-Plug 'eslint/eslint';
 Plug 'wuelnerdotexe/vim-astro'
 Plug 'vuki656/package-info.nvim'
 

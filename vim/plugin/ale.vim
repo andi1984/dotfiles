@@ -21,10 +21,6 @@ let g:ale_sign_error = '●'
 let g:ale_sign_warning = '.'
 
 let g:ale_linters = {
-\   'javascript': ['eslint', 'tslint'],
-\   'javascriptreact': ['eslint', 'stylelint'],
-\   'typescript': ['eslint', 'typecheck'],
-\   'typescriptreact': ['eslint', 'typecheck', 'stylelint'],
 \   'rust': ['analyzer'],
 \}
 

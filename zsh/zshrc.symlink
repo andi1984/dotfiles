@@ -63,9 +63,9 @@ then
   source ~/.localrc
 fi
 
-# all of our zsh files
+# all of our zsh files (explicit directories to avoid sourcing vim plugin files)
 typeset -U config_files
-config_files=($DOTFILES/**/*.zsh)
+config_files=($DOTFILES/{git,node,zsh}/**/*.zsh)
 
 # load the path files
 for file in ${(M)config_files:#*/path.zsh}
@@ -92,3 +92,8 @@ export PATH="$DENO_INSTALL/bin:$PATH"
 export PATH="$HOME/.poetry/bin:$PATH"
 
 [ -f /Users/andreassander/.docker/init-zsh.sh ] && source /Users/andreassander/.docker/init-zsh.sh # Added by Docker Desktop
+
+# opencode
+export PATH=/Users/andreassander/.opencode/bin:$PATH
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
