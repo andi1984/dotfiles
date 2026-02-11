@@ -66,9 +66,9 @@ Plug 'bassamsdata/namu.nvim'
 -- Plug 'williamboman/nvim-lsp-installer'
 Plug 'williamboman/mason.nvim'
 Plug 'williamboman/mason-lspconfig.nvim'
-Plug 'neovim/nvim-lspconfig'
+-- Plug 'neovim/nvim-lspconfig'  -- Neovim 0.11 has native vim.lsp.config()
 
-Plug 'kyoh86/climbdir.nvim'
+-- Plug 'kyoh86/climbdir.nvim'  -- replaced by vim.fs.root()
 Plug 'pmizio/typescript-tools.nvim'
 
 Plug 'dense-analysis/ale'

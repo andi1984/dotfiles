@@ -47,19 +47,22 @@ require("typescript-tools").setup {
         client.server_capabilities.documentFormattingProvider = false
         client.server_capabilities.documentRangeFormattingProvider = false
   end,
-  root_dir = function(path)
-        local marker = require("climbdir.marker")
-        -- Determine the root directory based on the presence of package.json or node_modules
-        return require("climbdir").climb(path,
-                marker.one_of(marker.has_readable_file("package.json"), marker.has_directory("node_modules")), {
-                -- Stop the plugin if any of the specified files/folders are found
-                halt = marker.one_of(
-                    marker.has_readable_file("deno.json"),
-                    marker.has_readable_file("deno.jsonc"),
-                    marker.has_readable_file("import_map.json"),
-                    marker.has_directory("denops")
-        ),
-    })
+  root_dir = function(bufnr, on_dir)
+        -- Find nearest package.json or node_modules (Node project root)
+        local node_root = vim.fs.root(bufnr, { "package.json", "node_modules" })
+        if not node_root then
+            on_dir(nil)
+            return
+        end
+
+        -- Check for Deno markers at or above the Node root — if found, don't attach
+        local deno_root = vim.fs.root(bufnr, { "deno.json", "deno.jsonc", "import_map.json", "denops" })
+        if deno_root and #deno_root <= #node_root then
+            on_dir(nil)
+            return
+        end
+
+        on_dir(node_root)
     end,
     single_file_support = false,
 }

@@ -20,7 +20,12 @@ require("mason").setup({
         }
     }
 })
-require("mason-lspconfig").setup()
+require("mason-lspconfig").setup({
+    -- typescript-tools.nvim handles TS/JS — don't auto-enable competing servers
+    automatic_enable = {
+        exclude = { "ts_ls", "tsgo" },
+    },
+})
 
 -- After setting up mason-lspconfig you may set up servers via lspconfig
 -- require("lspconfig").lua_ls.setup {}
