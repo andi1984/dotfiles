@@ -80,6 +80,14 @@ vim.lsp.config('pylsp', {
   },
 })
 
+vim.lsp.config('ruff', {
+  init_options = {
+    settings = {
+        logLevel = 'info',
+    }
+  }
+})
+
 vim.lsp.config('gopls', {
   cmd = { 'gopls' },
   filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
@@ -105,4 +113,4 @@ vim.lsp.config('tailwindcss', {
 })
 
 -- Enable all configured servers
-vim.lsp.enable({ 'rust_analyzer', 'denols', 'pylsp', 'gopls', 'vuels', 'tailwindcss' })
+vim.lsp.enable({ 'rust_analyzer', 'denols', 'pylsp', 'ruff', 'gopls', 'vuels', 'tailwindcss' })
