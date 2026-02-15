@@ -181,6 +181,7 @@ bind 'TAB:menu-complete'
 
 echo "Source cargo"
 export PATH="~/snap/rustup/common/rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin:$PATH"
+export PATH="~/snap/rustup/common/rustup/toolchains/stable-x86_64-unknown-linux-gnu/bin/rust-analyzer:$PATH"
 
 # Load Bash It
 source "$BASH_IT"/bash_it.sh

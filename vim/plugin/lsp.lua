@@ -94,8 +94,8 @@ vim.lsp.config('gopls', {
   root_markers = { 'go.work', 'go.mod', '.git' },
 })
 
-vim.lsp.config('vuels', {
-  cmd = { 'vls' },
+vim.lsp.config('vue_ls', {
+  cmd = { 'vue-language-server', '--stdio' },
   filetypes = { 'vue' },
   root_markers = { 'package.json', '.git' },
 })
@@ -113,4 +113,4 @@ vim.lsp.config('tailwindcss', {
 })
 
 -- Enable all configured servers
-vim.lsp.enable({ 'rust_analyzer', 'denols', 'pylsp', 'ruff', 'gopls', 'vuels', 'tailwindcss' })
+vim.lsp.enable({ 'rust_analyzer', 'denols', 'pylsp', 'ruff', 'gopls', 'vue_ls', 'tailwindcss' })
