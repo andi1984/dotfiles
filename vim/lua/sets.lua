@@ -1,9 +1,16 @@
-vim.api.nvim_command('set noswapfile')
-vim.api.nvim_command('set nobackup')
-vim.api.nvim_command('set nowritebackup')
-vim.api.nvim_command('set cmdheight=2')
-vim.api.nvim_command('set updatetime=300')
-vim.api.nvim_command('set shortmess+=c')
-vim.api.nvim_command('set colorcolumn=80')
-vim.api.nvim_command('set termguicolors')
-vim.api.nvim_command('set conceallevel=0')
+local opt = vim.opt
+
+-- Disable swap/backup (use undofile instead)
+opt.swapfile = false
+opt.backup = false
+opt.writebackup = false
+
+-- Command line
+opt.cmdheight = 2
+opt.updatetime = 300
+opt.shortmess:append("c")
+
+-- Visual
+opt.colorcolumn = "80"
+opt.termguicolors = true
+opt.conceallevel = 0

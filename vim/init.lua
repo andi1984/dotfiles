@@ -1,28 +1,29 @@
--- Reference https://github.com/doums/dotfiles/blob/master/.config/nvim/init.lua
--- Aliases 
+-- Startup optimizations
+vim.loader.enable() -- Neovim 0.9+ bytecode cache
 
-local opt = vim.opt
-local g = vim.g
-local cmd = vim.cmd
-local window = vim.wo
+-- Disable unused providers for faster startup
+vim.g.loaded_python3_provider = 0
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_node_provider = 0
 
--- Own changes
-
+-- Leader key (must be set before lazy.nvim)
 vim.g.mapleader = " "
+vim.g.maplocalleader = " "
 
-window.wrap = false
+-- Disable line wrap
+vim.wo.wrap = false
 
-cmd 'autocmd CmdlineEnter /,? :set hlsearch'
-cmd 'autocmd CmdlineLeave /,? :set nohlsearch'
+-- Search highlighting: only show while typing
+vim.cmd("autocmd CmdlineEnter /,? :set hlsearch")
+vim.cmd("autocmd CmdlineLeave /,? :set nohlsearch")
 
--- All the rest
-require('plugins')
-require('keymap')
-require('sets')
-require('opts')
+-- Load core configuration
+require("plugins") -- lazy.nvim handles plugin loading
+require("keymap")
+require("sets")
+require("opts")
+require("config.lsp") -- Native Neovim 0.11 LSP config
 
--- Plugin related
--- vim.cmd [[colorscheme solarized-osaka]]
--- vim.cmd [[colorscheme nightfox]]
--- vim.cmd [[colorscheme everforest]]
-vim.cmd [[colorscheme evergarden]]
+-- Colorscheme (lazy.nvim already loaded it with priority)
+vim.cmd.colorscheme("evergarden")
