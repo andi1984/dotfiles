@@ -192,3 +192,12 @@ PERL_LOCAL_LIB_ROOT="/home/andreas/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB
 PERL_MB_OPT="--install_base \"/home/andreas/perl5\""; export PERL_MB_OPT;
 PERL_MM_OPT="INSTALL_BASE=/home/andreas/perl5"; export PERL_MM_OPT;
 . "/home/andreas/.deno/env"
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# Android SDK/NDK — Ferrico mobile build (ticket #61)
+export ANDROID_HOME="$HOME/Android/Sdk"
+export NDK_HOME="$ANDROID_HOME/ndk/30.0.15729638"
+export JAVA_HOME="/usr/lib/jvm/java-21-openjdk-amd64"
+export PATH="$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH"
