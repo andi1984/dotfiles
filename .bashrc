@@ -201,3 +201,5 @@ export ANDROID_HOME="$HOME/Android/Sdk"
 export NDK_HOME="$ANDROID_HOME/ndk/30.0.15729638"
 export JAVA_HOME="/usr/lib/jvm/java-21-openjdk-amd64"
 export PATH="$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH"
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash

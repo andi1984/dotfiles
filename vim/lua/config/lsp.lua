@@ -112,5 +112,32 @@ vim.lsp.config('tailwindcss', {
   },
 })
 
+vim.lsp.config('jdtls', {
+  -- mason's jdtls wrapper picks a per-project data dir automatically
+  cmd = { 'jdtls' },
+  filetypes = { 'java' },
+  root_markers = {
+    'settings.gradle', 'settings.gradle.kts',
+    'build.gradle', 'build.gradle.kts',
+    'pom.xml', 'mvnw', 'gradlew',
+    '.git',
+  },
+})
+
+-- JetBrains Kotlin LSP (mason package `kotlin-lsp`, binary `intellij-server`)
+vim.lsp.config('kotlin_lsp', {
+  cmd = { 'intellij-server', '--stdio' },
+  filetypes = { 'kotlin' },
+  root_markers = {
+    'settings.gradle', 'settings.gradle.kts',
+    'build.gradle', 'build.gradle.kts',
+    'pom.xml', 'gradlew',
+    '.git',
+  },
+})
+
 -- Enable all configured servers
-vim.lsp.enable({ 'rust_analyzer', 'denols', 'pylsp', 'ruff', 'gopls', 'vue_ls', 'tailwindcss' })
+vim.lsp.enable({
+  'rust_analyzer', 'denols', 'pylsp', 'ruff', 'gopls', 'vue_ls', 'tailwindcss',
+  'jdtls', 'kotlin_lsp',
+})

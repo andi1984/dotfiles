@@ -396,7 +396,7 @@ require("lazy").setup({
         ensure_installed = {
           "typescript", "javascript", "tsx", "vue", "html", "css",
           "lua", "vim", "vimdoc", "query",
-          "go", "rust", "python",
+          "go", "rust", "python", "java", "kotlin",
           "json", "yaml", "toml", "markdown", "markdown_inline",
           "bash", "graphql", "dockerfile",
         },
