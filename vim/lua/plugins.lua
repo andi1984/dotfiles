@@ -163,6 +163,19 @@ require("lazy").setup({
     cmd = "PasteImage",
     config = true,
   },
+  {
+    "coder/claudecode.nvim",
+    cmd = { "ClaudeCode", "ClaudeCodeFocus", "ClaudeCodeAdd", "ClaudeCodeSend", "ClaudeCodeDiffAccept", "ClaudeCodeDiffDeny" },
+    keys = {
+      { "<leader>cA", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude Code" },
+      { "<leader>cF", "<cmd>ClaudeCodeFocus<cr>", desc = "Focus Claude Code" },
+      { "<leader>cb", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add buffer to Claude" },
+      { "<leader>cs", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send selection to Claude" },
+      { "<leader>cy", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept Claude diff" },
+      { "<leader>cn", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Deny Claude diff" },
+    },
+    config = true,
+  },
 
   --------------------------------------------------------------------------------
   -- Telescope Fuzzy Finder
