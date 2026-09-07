@@ -220,7 +220,6 @@ require("lazy").setup({
   {
     "junegunn/fzf",
     build = "./install --all",
-    lazy = true,
   },
   {
     "junegunn/fzf.vim",

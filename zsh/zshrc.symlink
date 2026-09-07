@@ -49,10 +49,6 @@ source $ZSH/oh-my-zsh.sh
 #To enable shims and autocompletion add to your profile:
 eval "$(rbenv init -)"
 
-# Init pyenv
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
-
 function gi() { curl -L -s https://www.gitignore.io/api/$@ ;}
 
 # Stash your environment variables in ~/.localrc. This means they'll stay out
@@ -97,3 +93,11 @@ export PATH="$HOME/.poetry/bin:$PATH"
 export PATH=/Users/andreassander/.opencode/bin:$PATH
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# pnpm
+export PNPM_HOME="/Users/andreassander/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME/bin:"*) ;;
+  *) export PATH="$PNPM_HOME/bin:$PATH" ;;
+esac
+# pnpm end

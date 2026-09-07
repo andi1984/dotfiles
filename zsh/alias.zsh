@@ -6,6 +6,8 @@ alias nfix='nvm use'
 # Integration deploy
 alias use_integration="export KUBECONFIG=$HOME/Documents/integration2.yaml"
 alias use_development="export KUBECONFIG=$HOME/Documents/development.yaml"
+alias use_rancher28="export KUBECONFIG=$HOME/Documents/rancher28.yaml"
+alias use_prodprod="export KUBECONFIG=$HOME/Documents/rancherprodprod.yaml"
 # Kube aliases
 alias k="kubectl --insecure-skip-tls-verify"
 alias kns="kubectl --insecure-skip-tls-verify get namespaces"
