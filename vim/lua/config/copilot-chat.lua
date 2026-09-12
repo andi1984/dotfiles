@@ -23,7 +23,7 @@ Always end with:
 ]]
 
 chat.setup({
-  model = "gpt-4.1",
+  model = "mistral-large-latest:mistral",
   debug = false,
   temperature = 0,
   sticky = "#buffers",
@@ -128,6 +128,63 @@ chat.setup({
   providers = {
     github_models = {
       disabled = true,
+    },
+    -- No active GitHub Copilot subscription: disable it so it's never
+    -- picked and errors don't show up on the default model.
+    copilot = {
+      disabled = true,
+    },
+    openai = {
+      prepare_input = require("CopilotChat.config.providers").copilot.prepare_input,
+      prepare_output = require("CopilotChat.config.providers").copilot.prepare_output,
+      get_headers = function()
+        local api_key = assert(os.getenv("OPENAI_API_KEY"), "OPENAI_API_KEY env not set")
+        return {
+          Authorization = "Bearer " .. api_key,
+          ["Content-Type"] = "application/json",
+        }
+      end,
+      get_models = function(headers)
+        local response, err = cutils.curl_get("https://api.openai.com/v1/models", {
+          headers = headers,
+          json_response = true,
+        })
+        if err then
+          error(err)
+        end
+        return vim.tbl_map(function(model)
+          return { id = model.id, name = model.id, streaming = true, tools = true }
+        end, response.body.data)
+      end,
+      get_url = function()
+        return "https://api.openai.com/v1/chat/completions"
+      end,
+    },
+    mistral = {
+      prepare_input = require("CopilotChat.config.providers").copilot.prepare_input,
+      prepare_output = require("CopilotChat.config.providers").copilot.prepare_output,
+      get_headers = function()
+        local api_key = assert(os.getenv("MISTRAL_API_KEY"), "MISTRAL_API_KEY env not set")
+        return {
+          Authorization = "Bearer " .. api_key,
+          ["Content-Type"] = "application/json",
+        }
+      end,
+      get_models = function(headers)
+        local response, err = cutils.curl_get("https://api.mistral.ai/v1/models", {
+          headers = headers,
+          json_response = true,
+        })
+        if err then
+          error(err)
+        end
+        return vim.tbl_map(function(model)
+          return { id = model.id, name = model.id, streaming = true, tools = true }
+        end, response.body.data)
+      end,
+      get_url = function()
+        return "https://api.mistral.ai/v1/chat/completions"
+      end,
     },
     gemini = {
       prepare_input = require("CopilotChat.config.providers").copilot.prepare_input,

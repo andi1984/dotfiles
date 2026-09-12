@@ -127,24 +127,13 @@ require("lazy").setup({
   },
 
   --------------------------------------------------------------------------------
-  -- AI / Copilot
+  -- AI / Chat & Completion (Copilot subscription cancelled -> Mistral/OpenAI backed)
   --------------------------------------------------------------------------------
   {
-    "github/copilot.vim",
-    event = "InsertEnter",
-    config = function()
-      vim.g.copilot_no_tab_map = true
-      vim.g.copilot_hide_during_completion = false
-      vim.g.copilot_proxy_strict_ssl = false
-      vim.g.copilot_settings = { selectedCompletionModel = "gpt-4o-copilot" }
-      vim.keymap.set("i", "<S-Tab>", 'copilot#Accept("\\<S-Tab>")', { expr = true, replace_keycodes = false })
-    end,
-  },
-  {
     "CopilotC-Nvim/CopilotChat.nvim",
-    cmd = { "CopilotChat", "CopilotChatOpen", "CopilotChatToggle" },
+    cmd = { "CopilotChat", "CopilotChatOpen", "CopilotChatToggle", "CopilotChatModels" },
     keys = {
-      { "<leader>cc", "<cmd>CopilotChatToggle<cr>", desc = "Copilot Chat" },
+      { "<leader>cc", "<cmd>CopilotChatToggle<cr>", desc = "AI Chat" },
       { "<leader>ae", desc = "AI Explain" },
       { "<leader>ar", desc = "AI Review" },
       { "<leader>at", desc = "AI Tests" },
@@ -153,9 +142,50 @@ require("lazy").setup({
       { "<leader>ad", desc = "AI Documentation" },
       { "<leader>ac", desc = "AI Generate Commit" },
     },
-    dependencies = { "github/copilot.vim", "nvim-lua/plenary.nvim" },
+    dependencies = { "nvim-lua/plenary.nvim" },
     config = function()
       require("config.copilot-chat")
+    end,
+  },
+  {
+    -- Inline ghost-text code completion (Copilot replacement), backed by
+    -- Mistral's Codestral (purpose-built for FIM completion) by default.
+    -- Switch provider = "openai" below to use OpenAI instead.
+    "milanglacier/minuet-ai.nvim",
+    event = "InsertEnter",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      require("minuet").setup({
+        provider = "codestral",
+        provider_options = {
+          codestral = {
+            model = "codestral-latest",
+            end_point = "https://codestral.mistral.ai/v1/fim/completions",
+            api_key = "CODESTRAL_API_KEY",
+            stream = true,
+            -- Shown as the item's "kind" label in the nvim-cmp popup so
+            -- Mistral suggestions are visually marked apart from LSP/buffer ones.
+            name = "* Mistral",
+          },
+        },
+        cmp = {
+          enable_auto_complete = true,
+        },
+        virtualtext = {
+          auto_trigger_ft = { "*" },
+          auto_trigger_ignore_ft = { "markdown", "text", "TelescopePrompt" },
+          keymap = {
+            accept = "<A-A>",
+            accept_line = "<A-a>",
+            accept_n_lines = "<A-z>",
+            prev = "<A-[>",
+            next = "<A-]>",
+            dismiss = "<A-e>",
+          },
+        },
+      })
+      -- Distinct color for the "* Mistral" kind label in the cmp popup.
+      vim.api.nvim_set_hl(0, "CmpItemKindMinuet", { fg = "#FF7000", bold = true })
     end,
   },
   {
@@ -522,6 +552,7 @@ require("lazy").setup({
     "hrsh7th/nvim-cmp",
     event = { "InsertEnter", "CmdlineEnter" },
     dependencies = {
+      "milanglacier/minuet-ai.nvim",
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-path",
@@ -547,6 +578,7 @@ require("lazy").setup({
           ["<CR>"] = cmp.mapping.confirm({ select = true }),
         }),
         sources = cmp.config.sources({
+          { name = "minuet", priority = 100 },
           { name = "nvim_lsp" },
           { name = "vsnip" },
           { name = "buffer" },
