@@ -66,26 +66,64 @@ vim.lsp.config('denols', {
   root_markers = { 'deno.json', 'deno.jsonc' },
 })
 
-vim.lsp.config('pylsp', {
-  cmd = { 'pylsp' },
+-- Python: basedpyright (installed via `uv tool install basedpyright`).
+-- Resolves imports against the project's `.venv` (uv/poetry/venv) so
+-- third-party packages get hover docs, go-to-definition and semantic
+-- highlighting. Falls back to the system interpreter when no `.venv` exists.
+local python_root_markers = {
+  'pyproject.toml',
+  'uv.lock',
+  'setup.py',
+  'setup.cfg',
+  'requirements.txt',
+  'Pipfile',
+  'tox.ini',
+  '.git',
+}
+
+local function venv_python(root)
+  if not root then return nil end
+  local candidate = root .. '/.venv/bin/python'
+  if vim.uv.fs_stat(candidate) then
+    return candidate
+  end
+  return nil
+end
+
+vim.lsp.config('basedpyright', {
+  cmd = { 'basedpyright-langserver', '--stdio' },
   filetypes = { 'python' },
-  root_markers = {
-    'pyproject.toml',
-    'setup.py',
-    'setup.cfg',
-    'requirements.txt',
-    'Pipfile',
-    'tox.ini',
-    '.git',
+  root_markers = python_root_markers,
+  settings = {
+    basedpyright = {
+      analysis = {
+        autoSearchPaths = true,
+        useLibraryCodeForTypes = true,
+        diagnosticMode = 'openFilesOnly',
+        typeCheckingMode = 'standard',
+      },
+    },
   },
+  before_init = function(_, config)
+    local py = venv_python(config.root_dir)
+    if py then
+      config.settings = vim.tbl_deep_extend('force', config.settings or {}, {
+        python = { pythonPath = py },
+      })
+    end
+  end,
 })
 
+-- Ruff LSP: linting + formatting (installed via `uv tool install ruff`).
 vim.lsp.config('ruff', {
+  cmd = { 'ruff', 'server' },
+  filetypes = { 'python' },
+  root_markers = python_root_markers,
   init_options = {
     settings = {
-        logLevel = 'info',
-    }
-  }
+      logLevel = 'info',
+    },
+  },
 })
 
 vim.lsp.config('gopls', {
@@ -138,6 +176,6 @@ vim.lsp.config('kotlin_lsp', {
 
 -- Enable all configured servers
 vim.lsp.enable({
-  'rust_analyzer', 'denols', 'pylsp', 'ruff', 'gopls', 'vue_ls', 'tailwindcss',
+  'rust_analyzer', 'denols', 'basedpyright', 'ruff', 'gopls', 'vue_ls', 'tailwindcss',
   'jdtls', 'kotlin_lsp',
 })
