@@ -345,7 +345,7 @@ require("lazy").setup({
   },
   {
     "dense-analysis/ale",
-    event = "BufReadPre",
+    event = { "BufReadPre", "BufNewFile" },
     config = function()
       vim.g.ale_lint_on_enter = 0
       vim.g.ale_lint_on_save = 1
@@ -362,6 +362,60 @@ require("lazy").setup({
         rust = { "rustfmt" },
       }
       vim.g.ale_fix_on_save = 1
+
+      -- Python: use the formatter the project configures, else ruff_format.
+      -- ALE resolves executables from the project's .venv before $PATH.
+      local function read(path)
+        local f = io.open(path, "r")
+        if not f then return "" end
+        local content = f:read("*a")
+        f:close()
+        return content
+      end
+
+      local function python_fixers(bufnr)
+        local root = vim.fs.root(bufnr, {
+          "pyproject.toml", "setup.cfg", "tox.ini", "ruff.toml", ".ruff.toml",
+          ".style.yapf", ".isort.cfg", ".pre-commit-config.yaml", ".git",
+        })
+        if not root then return { "ruff_format" } end
+
+        local function exists(name) return vim.uv.fs_stat(root .. "/" .. name) ~= nil end
+        local pyproject = read(root .. "/pyproject.toml")
+        local setup_cfg = read(root .. "/setup.cfg") .. read(root .. "/tox.ini")
+        local precommit = read(root .. "/.pre-commit-config.yaml")
+
+        local isort = pyproject:find("%[tool%.isort%]") or exists(".isort.cfg")
+          or setup_cfg:find("%[isort%]") or precommit:find("id:%s*isort")
+        local function with_isort(fixer)
+          return isort and { "isort", fixer } or { fixer }
+        end
+
+        if pyproject:find("%[tool%.black%]") or precommit:find("id:%s*black") then
+          return with_isort("black")
+        elseif pyproject:find("%[tool%.yapf%]") or exists(".style.yapf") or setup_cfg:find("%[yapf%]") then
+          return with_isort("yapf")
+        elseif pyproject:find("%[tool%.autopep8%]") or setup_cfg:find("%[autopep8%]") then
+          return with_isort("autopep8")
+        elseif pyproject:find("%[tool%.ruff") or exists("ruff.toml") or exists(".ruff.toml")
+          or precommit:find("id:%s*ruff%-format") then
+          -- `ruff format` doesn't sort imports; run ruff's isort rule (I) first.
+          -- Only that rule is applied, honouring [tool.ruff.lint.isort].
+          vim.b[bufnr].ale_python_ruff_options = "--select I"
+          return { "ruff", "ruff_format" }
+        elseif vim.uv.fs_stat(root .. "/.venv/bin/black") then
+          return with_isort("black")
+        end
+        return with_isort("ruff_format")
+      end
+
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = "python",
+        callback = function(args)
+          vim.b[args.buf].ale_fixers = { python = python_fixers(args.buf) }
+        end,
+      })
+
       vim.keymap.set("n", "<C-e>", "<Plug>(ale_next_wrap)", { silent = true })
     end,
   },
