@@ -1,0 +1,48 @@
+name: CI
+
+# Bootstraps the dotfiles into a throwaway HOME on Ubuntu and macOS and starts
+# bash and zsh, failing on any startup error. See script/test.
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    env:
+      # Fail fast instead of prompting when the SSH-only submodule can't be fetched.
+      GIT_SSH_COMMAND: ssh -o BatchMode=yes
+    steps:
+      - uses: actions/checkout@v5
+
+      # The bash-it submodule is a private fork over SSH, so CI runs without it.
+      # That covers the "bash-it not installed" fallback.
+
+      - name: Install zsh and shellcheck
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y zsh shellcheck
+
+      # Ubuntu's global /etc/zsh/zshrc runs compinit, which aborts without a
+      # terminal when the runner image has group-writable completion dirs.
+      - name: Secure zsh completion dirs on the runner
+        if: runner.os == 'Linux'
+        run: |
+          dirs="$(zsh -c 'autoload -Uz compaudit; compaudit' 2>/dev/null || true)"
+          echo "insecure: ${dirs:-none}"
+          if [ -n "$dirs" ]; then
+            echo "$dirs" | xargs sudo chown root:root
+            echo "$dirs" | xargs sudo chmod g-w,o-w
+          fi
+
+      - name: Install shellcheck
+        if: runner.os == 'macOS'
+        run: command -v shellcheck || brew install shellcheck
+
+      - name: Smoke test
+        run: script/test

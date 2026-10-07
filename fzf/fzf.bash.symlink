@@ -1,0 +1,48 @@
+# fzf key bindings and completion for bash, linked to ~/.fzf.bash.
+#
+# Uses `fzf --bash` (fzf >= 0.48). Distro packages can be older (Ubuntu ships
+# 0.44), so a newer fzf from ~/.fzf or lazy.nvim is preferred when present, and
+# otherwise the scripts bundled with the old package are sourced. Does nothing
+# without fzf, and initializes only once even when sourced repeatedly.
+
+if [ -z "${__DOTFILES_FZF_LOADED:-}" ]; then
+  __DOTFILES_FZF_LOADED=1
+
+  __dotfiles_fzf_init() {
+    local dir
+
+    if ! fzf --bash >/dev/null 2>&1; then
+      for dir in "$HOME/.fzf/bin" "$HOME/.local/share/nvim/lazy/fzf/bin"; do
+        if [ -x "$dir/fzf" ] && "$dir/fzf" --bash >/dev/null 2>&1; then
+          PATH="$dir:$PATH"
+          break
+        fi
+      done
+    fi
+
+    if fzf --bash >/dev/null 2>&1; then
+      eval "$(fzf --bash)"
+      return 0
+    fi
+
+    command -v fzf >/dev/null 2>&1 || return 0
+
+    for dir in /usr/share/doc/fzf/examples /usr/share/fzf "$HOME/.fzf/shell"; do
+      if [ -r "$dir/key-bindings.bash" ]; then
+        # shellcheck source=/dev/null
+        . "$dir/key-bindings.bash"
+        break
+      fi
+    done
+    for dir in /usr/share/bash-completion/completions/fzf /usr/share/fzf/completion.bash "$HOME/.fzf/shell/completion.bash"; do
+      if [ -r "$dir" ]; then
+        # shellcheck source=/dev/null
+        . "$dir"
+        break
+      fi
+    done
+  }
+
+  __dotfiles_fzf_init
+  unset -f __dotfiles_fzf_init
+fi

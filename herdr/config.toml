@@ -1,0 +1,15 @@
+# herdr configuration, shared between Linux and macOS.
+# Linked to ~/.config/herdr/config.toml by herdr/install.sh.
+# Keybindings are herdr defaults (prefix ctrl+b); list them with prefix+?.
+
+onboarding = false
+
+[ui]
+status_indicators = "symbols"
+
+[ui.toast]
+delivery = "herdr"
+
+[theme]
+name = "catppuccin"
+auto_switch = false

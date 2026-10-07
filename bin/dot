@@ -3,12 +3,12 @@
 # dot
 #
 # `dot` handles installation, updates, things like that. Run it periodically
-# to make sure you're on the latest and greatest.
+# to make sure you're on the latest and greatest. Works on macOS and Linux;
+# macOS-only steps are skipped elsewhere.
 
 set -e
 
-parentDirectory="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd -P)"
-dotfilesDirectory="$(cd "$( dirname "$parentDirectory" )" && pwd -P)"
+dotfilesDirectory="$(cd "$(dirname "$0")/.." && pwd -P)"
 
 displayUsageAndExit() {
 	echo "dot -- dotfiles management"
@@ -27,8 +27,7 @@ while test $# -gt 0; do
 			displayUsageAndExit
 			;;
 		"-e"|"--edit")
-			exec "$EDITOR" "$dotfilesDirectory"
-			exit
+			exec "${EDITOR:-vi}" "$dotfilesDirectory"
 			;;
 		*)
 			echo "Invalid option: $1"
@@ -38,18 +37,22 @@ while test $# -gt 0; do
 	shift
 done
 
-export ZSH=$HOME/.dotfiles
-
 # Set macOS defaults
-$ZSH/macos/set-defaults.sh
+if [ "$(uname -s)" = "Darwin" ]
+then
+	"$dotfilesDirectory/macos/set-defaults.sh"
+fi
 
 # Install homebrew
-$ZSH/homebrew/install.sh 2>&1
+"$dotfilesDirectory/homebrew/install.sh" 2>&1
 
 # Upgrade homebrew
-echo "› brew update"
-brew update
+if command -v brew >/dev/null 2>&1
+then
+	echo "› brew update"
+	brew update
+fi
 
 # Install software
-echo "› $ZSH/script/install"
-$ZSH/script/install
+echo "› $dotfilesDirectory/script/install"
+"$dotfilesDirectory/script/install"

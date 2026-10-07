@@ -1,10 +1,12 @@
 ZSH_DISABLE_COMPFIX="true"
-source ~/.nvm/nvm.sh
+[ -s ~/.nvm/nvm.sh ] && source ~/.nvm/nvm.sh
 # your project folder that we can `c [tab]` to
 export PROJECTS=~/dev
 
 # shortcut to this dotfiles path is $DOTFILES
 export DOTFILES=$PROJECTS/dotfiles
+# Fall back to wherever this file lives when the repo isn't cloned to ~/dev/dotfiles.
+[[ -d $DOTFILES ]] || export DOTFILES=${${(%):-%x}:A:h:h}
 
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
@@ -41,13 +43,13 @@ alias pip-sync="pip freeze | grep -v -f requirements.txt - | xargs pip uninstall
 plugins=(git git-flow gitignore gulp npm grunt github brew python)
 # Path to your oh-my-zsh configuration.
 export ZSH=$HOME/.oh-my-zsh
-source $ZSH/oh-my-zsh.sh
+[ -r $ZSH/oh-my-zsh.sh ] && source $ZSH/oh-my-zsh.sh
 
 # Customize to your needs...
 
 # Set up rbenv for Homebrew. Make sure path is BEFORE Homebrew's /usr/local/[s]bin
 #To enable shims and autocompletion add to your profile:
-eval "$(rbenv init -)"
+command -v rbenv >/dev/null && eval "$(rbenv init -)"
 
 function gi() { curl -L -s https://www.gitignore.io/api/$@ ;}
 
@@ -61,7 +63,7 @@ fi
 
 # all of our zsh files (explicit directories to avoid sourcing vim plugin files)
 typeset -U config_files
-config_files=($DOTFILES/{git,node,zsh}/**/*.zsh)
+config_files=($DOTFILES/{git,node,zsh}/**/*.zsh(N))
 
 # load the path files
 for file in ${(M)config_files:#*/path.zsh}
@@ -82,20 +84,20 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-export DENO_INSTALL="/Users/andreassander/.deno"
+export DENO_INSTALL="$HOME/.deno"
 export PATH="$DENO_INSTALL/bin:$PATH"
 
 export PATH="$HOME/.poetry/bin:$PATH"
 
-[ -f /Users/andreassander/.docker/init-zsh.sh ] && source /Users/andreassander/.docker/init-zsh.sh # Added by Docker Desktop
+[ -f "$HOME/.docker/init-zsh.sh" ] && source "$HOME/.docker/init-zsh.sh" # Added by Docker Desktop
 
 # opencode
-export PATH=/Users/andreassander/.opencode/bin:$PATH
+export PATH="$HOME/.opencode/bin:$PATH"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # pnpm
-export PNPM_HOME="/Users/andreassander/Library/pnpm"
+export PNPM_HOME="$HOME/Library/pnpm"
 case ":$PATH:" in
   *":$PNPM_HOME/bin:"*) ;;
   *) export PATH="$PNPM_HOME/bin:$PATH" ;;

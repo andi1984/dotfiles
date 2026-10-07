@@ -1,30 +1,63 @@
 #!/usr/bin/env bash
 #
-# bootstrap installs things.
+# bootstrap installs things. Works on macOS and Linux (Ubuntu).
+#
+# Usage: script/bootstrap [--yes] [--no-install]
+#   --yes         don't ask about existing files, back them up instead
+#                 (also the default when stdin is not a terminal)
+#   --no-install  only link files, skip bin/dot (Homebrew, installers, ...)
 
 cd "$(dirname "$0")/.."
 DOTFILES_ROOT=$(pwd -P)
 
 set -e
+set -o pipefail
+
+assume_yes=false
+run_install=true
+for arg in "$@"
+do
+  case "$arg" in
+    -y|--yes) assume_yes=true ;;
+    --no-install) run_install=false ;;
+    -h|--help) sed -n '2,9p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    *) echo "Unknown option: $arg" >&2; exit 1 ;;
+  esac
+done
+[ -t 0 ] || assume_yes=true
 
 echo ''
 
 info () {
-  printf "\r  [ \033[00;34m..\033[0m ] $1\n"
+  printf "\r  [ \033[00;34m..\033[0m ] %b\n" "$1"
 }
 
 user () {
-  printf "\r  [ \033[0;33m??\033[0m ] $1\n"
+  printf "\r  [ \033[0;33m??\033[0m ] %b\n" "$1"
 }
 
 success () {
-  printf "\r\033[2K  [ \033[00;32mOK\033[0m ] $1\n"
+  printf "\r\033[2K  [ \033[00;32mOK\033[0m ] %b\n" "$1"
 }
 
 fail () {
-  printf "\r\033[2K  [\033[0;31mFAIL\033[0m] $1\n"
+  printf "\r\033[2K  [\033[0;31mFAIL\033[0m] %b\n" "$1"
   echo ''
-  exit
+  exit 1
+}
+
+warn () {
+  printf "\r\033[2K  [\033[0;33mWARN\033[0m] %b\n" "$1"
+}
+
+# Absolute target of a symlink, resolving targets relative to the link's directory.
+link_target () {
+  local target
+  target="$(readlink "$1")" || return 1
+  case "$target" in
+    /*) echo "$target" ;;
+    *) echo "$(cd -P "$(dirname "$1")" && pwd)/$target" ;;
+  esac
 }
 
 setup_gitconfig () {
@@ -39,9 +72,9 @@ setup_gitconfig () {
     fi
 
     user ' - What is your github author name?'
-    read -e git_authorname
+    read -r -e git_authorname
     user ' - What is your github author email?'
-    read -e git_authoremail
+    read -r -e git_authoremail
 
     sed -e "s/AUTHORNAME/$git_authorname/g" -e "s/AUTHOREMAIL/$git_authoremail/g" -e "s/GIT_CREDENTIAL_HELPER/$git_credential/g" git/gitconfig.local.symlink.example > git/gitconfig.local.symlink
 
@@ -53,46 +86,43 @@ setup_gitconfig () {
 link_file () {
   local src=$1 dst=$2
 
-  local overwrite= backup= skip=
-  local action=
+  local overwrite='' backup='' skip=''
+  local action=''
 
-  if [ -f "$dst" -o -d "$dst" -o -L "$dst" ]
+  local currentSrc
+  currentSrc="$(link_target "$dst" 2>/dev/null || true)"
+
+  if [ "$currentSrc" == "$src" ]
+  then
+
+    skip=true;
+
+  elif [ -f "$dst" ] || [ -d "$dst" ] || [ -L "$dst" ]
   then
 
     if [ "$overwrite_all" == "false" ] && [ "$backup_all" == "false" ] && [ "$skip_all" == "false" ]
     then
 
-      local currentSrc="$(readlink $dst)"
+      user "File already exists: $dst ($(basename "$src")), what do you want to do?\n\
+      [s]kip, [S]kip all, [o]verwrite, [O]verwrite all, [b]ackup, [B]ackup all?"
+      read -r -n 1 action
 
-      if [ "$currentSrc" == "$src" ]
-      then
-
-        skip=true;
-
-      else
-
-        user "File already exists: $dst ($(basename "$src")), what do you want to do?\n\
-        [s]kip, [S]kip all, [o]verwrite, [O]verwrite all, [b]ackup, [B]ackup all?"
-        read -n 1 action
-
-        case "$action" in
-          o )
-            overwrite=true;;
-          O )
-            overwrite_all=true;;
-          b )
-            backup=true;;
-          B )
-            backup_all=true;;
-          s )
-            skip=true;;
-          S )
-            skip_all=true;;
-          * )
-            ;;
-        esac
-
-      fi
+      case "$action" in
+        o )
+          overwrite=true;;
+        O )
+          overwrite_all=true;;
+        b )
+          backup=true;;
+        B )
+          backup_all=true;;
+        s )
+          skip=true;;
+        S )
+          skip_all=true;;
+        * )
+          ;;
+      esac
 
     fi
 
@@ -108,18 +138,25 @@ link_file () {
 
     if [ "$backup" == "true" ]
     then
-      mv "$dst" "${dst}.backup"
-      success "moved $dst to ${dst}.backup"
+      local backup_path="${dst}.backup"
+      if [ -e "$backup_path" ] || [ -L "$backup_path" ]
+      then
+        backup_path="${dst}.backup-$(date +%Y%m%d%H%M%S)"
+      fi
+      mv "$dst" "$backup_path"
+      success "moved $dst to $backup_path"
     fi
 
-    if [ "$skip" == "true" ]
-    then
-      success "skipped $src"
-    fi
+  fi
+
+  if [ "$skip" == "true" ]
+  then
+    success "skipped $src"
   fi
 
   if [ "$skip" != "true" ]  # "false" or empty
   then
+    mkdir -p "$(dirname "$2")"
     ln -s "$1" "$2"
     success "linked $1 to $2"
   fi
@@ -129,21 +166,50 @@ install_dotfiles () {
   info 'installing dotfiles'
 
   local overwrite_all=false backup_all=false skip_all=false
+  [ "$assume_yes" == "true" ] && backup_all=true
 
-  for src in $(find -H "$DOTFILES_ROOT" -maxdepth 2 -name '*.symlink' -not -path '*.git*')
+  # topic/*.symlink -> ~/.<name>
+  # Read the list on fd 3 so the prompts in link_file still read the terminal.
+  while IFS= read -r src <&3
   do
     dst="$HOME/.$(basename "${src%.*}")"
     link_file "$src" "$dst"
-  done
+  done 3< <(find -H "$DOTFILES_ROOT" -maxdepth 2 -name '*.symlink' -not -path '*.git*')
+
+  # Files that don't follow the *.symlink convention.
+  link_file "$DOTFILES_ROOT/.bashrc" "$HOME/.bashrc"
+  link_file "$DOTFILES_ROOT/vim" "${XDG_CONFIG_HOME:-$HOME/.config}/nvim"
+  link_file "$DOTFILES_ROOT/kitty/kitty.conf" "${XDG_CONFIG_HOME:-$HOME/.config}/kitty/kitty.conf"
+  if [ -f "$DOTFILES_ROOT/.bash_it/bash_it.sh" ]
+  then
+    link_file "$DOTFILES_ROOT/.bash_it" "$HOME/.bash_it"
+  fi
 }
 
+# bash-it lives in a submodule. Only init that path: vim/plugged has stale
+# gitlinks without a .gitmodules entry that would make a full init fail.
+init_submodules () {
+  if [ -f "$DOTFILES_ROOT/.bash_it/bash_it.sh" ]
+  then
+    return
+  fi
+  info 'fetching bash-it submodule'
+  if git -C "$DOTFILES_ROOT" submodule update --init .bash_it
+  then
+    success 'bash-it submodule'
+  else
+    warn 'could not fetch the bash-it submodule, bash will start without bash-it'
+  fi
+}
+
+init_submodules
 install_dotfiles
 
-# If we're on a Mac, let's install and setup homebrew.
-if [ "$(uname -s)" == "Darwin" ]
+# Homebrew (macOS), macOS defaults and the topic installers.
+if [ "$run_install" == "true" ]
 then
   info "installing dependencies"
-  if source bin/dot | while read -r data; do info "$data"; done
+  if "$DOTFILES_ROOT/bin/dot" 2>&1 | while read -r data; do info "$data"; done
   then
     success "dependencies installed"
   else

@@ -1,0 +1,152 @@
+#!/usr/bin/env bash
+#
+# Smoke test for the dotfiles, used locally and in CI (macOS + Ubuntu).
+#
+# Bootstraps into a throwaway HOME, checks the links, then starts bash and zsh
+# twice: once with a bare PATH (a fresh machine without any of the tools) and
+# once with the current PATH. Any error output fails the test. Shell scripts
+# are linted with shellcheck when it is available.
+
+set -uo pipefail
+
+cd "$(dirname "$0")/.." || exit 1
+root="$(pwd -P)"
+sandbox="$(mktemp -d)"
+sandbox="$(cd -P "$sandbox" && pwd)"
+trap 'rm -rf "$sandbox"' EXIT
+status=0
+
+pass () { printf '  [ \033[00;32mOK\033[0m ] %s\n' "$1"; }
+fail () { printf '  [\033[0;31mFAIL\033[0m] %s\n' "$1"; status=1; }
+indent () { sed 's/^/         /'; }
+
+bare_path="/usr/bin:/bin:/usr/sbin:/sbin"
+
+# Run a command inside the sandbox HOME with a clean environment.
+in_sandbox () {
+  local path="$1"; shift
+  (cd "$sandbox" && env -i HOME="$sandbox" USER="${USER:-user}" PATH="$path" TERM=dumb NO_MUX=1 \
+    GIT_SSH_COMMAND="${GIT_SSH_COMMAND:-ssh -o BatchMode=yes}" "$@")
+}
+
+# Interactive shells without a terminal complain about job control, and bash
+# echoes "exit"; that's the test harness, not the dotfiles.
+harness_noise='cannot set terminal process group|no job control in this shell|can.t set tty pgrp|Inappropriate ioctl for device|^exit$'
+
+check_shell () {
+  local label="$1" path="$2"; shift 2
+  local err
+  err="$(in_sandbox "$path" "$@" -c 'exit 0' 2>&1 >/dev/null </dev/null | grep -Ev "$harness_noise")"
+  if [ -z "$err" ]
+  then
+    pass "$label starts cleanly"
+  else
+    fail "$label printed errors:"
+    printf '%s\n' "$err" | indent
+  fi
+}
+
+echo "› bootstrap into $sandbox"
+if out="$(in_sandbox "$PATH" "$root/script/bootstrap" --yes --no-install </dev/null 2>&1)"
+then
+  pass "bootstrap"
+else
+  fail "bootstrap failed:"; printf '%s\n' "$out" | indent
+fi
+if out="$(in_sandbox "$bare_path" "$root/herdr/install.sh" 2>&1)"
+then
+  pass "herdr/install.sh without herdr installed"
+else
+  fail "herdr/install.sh failed:"; printf '%s\n' "$out" | indent
+fi
+
+echo "› links"
+for pair in \
+  ".bashrc:.bashrc" \
+  ".zshrc:zsh/zshrc.symlink" \
+  ".fzf.bash:fzf/fzf.bash.symlink" \
+  ".config/nvim:vim" \
+  ".config/kitty/kitty.conf:kitty/kitty.conf" \
+  ".config/herdr/config.toml:herdr/config.toml"
+do
+  link="$sandbox/${pair%%:*}" want="$root/${pair#*:}"
+  if [ -L "$link" ] && [ "$(readlink "$link")" = "$want" ]
+  then
+    pass "\$HOME/${pair%%:*}"
+  else
+    fail "\$HOME/${pair%%:*} should link to $want"
+  fi
+done
+
+echo "› bootstrap again (idempotent)"
+in_sandbox "$PATH" "$root/script/bootstrap" --yes --no-install </dev/null >/dev/null 2>&1
+backups="$(find "$sandbox" -name '*.backup*' 2>/dev/null)"
+if [ -z "$backups" ]
+then
+  pass "second run changed nothing"
+else
+  fail "second run created backups:"; printf '%s\n' "$backups" | indent
+fi
+
+echo "› shell startup"
+check_shell "bash (bare PATH)" "$bare_path" bash -i
+check_shell "bash (current PATH)" "$PATH" bash -i
+if [ -x /bin/bash ] && [ "$(command -v bash)" != /bin/bash ]
+then
+  check_shell "/bin/bash $(/bin/bash -c 'echo $BASH_VERSION') (bare PATH)" "$bare_path" /bin/bash -i
+fi
+if command -v zsh >/dev/null 2>&1
+then
+  zsh_bin="$(command -v zsh)"
+  check_shell "zsh (bare PATH)" "$bare_path" "$zsh_bin" -i
+  check_shell "zsh (current PATH)" "$PATH" "$zsh_bin" -i
+  check_shell "zsh login (bare PATH)" "$bare_path" "$zsh_bin" -l -i
+else
+  echo "  zsh not installed, skipping"
+fi
+
+echo "› syntax"
+for f in .bashrc fzf/fzf.bash.symlink script/bootstrap script/install script/test
+do
+  if bash -n "$f"; then pass "bash -n $f"; else fail "bash -n $f"; fi
+done
+for f in bin/dot herdr/install.sh homebrew/install.sh node/install.sh macos/install.sh
+do
+  if sh -n "$f"; then pass "sh -n $f"; else fail "sh -n $f"; fi
+done
+if command -v zsh >/dev/null 2>&1
+then
+  for f in zsh/zshrc.symlink zsh/*.zsh node/*.zsh git/*.zsh
+  do
+    if zsh -n "$f"; then pass "zsh -n $f"; else fail "zsh -n $f"; fi
+  done
+fi
+
+echo "› shellcheck"
+if command -v shellcheck >/dev/null 2>&1
+then
+  shellcheck=(shellcheck)
+elif command -v uvx >/dev/null 2>&1
+then
+  shellcheck=(uvx --quiet --from shellcheck-py shellcheck)
+else
+  shellcheck=()
+fi
+if [ ${#shellcheck[@]} -gt 0 ]
+then
+  if out="$("${shellcheck[@]}" -e SC1090,SC1091 \
+      script/bootstrap script/install script/test bin/dot \
+      herdr/install.sh homebrew/install.sh node/install.sh 2>&1)" &&
+     out2="$("${shellcheck[@]}" -s bash -e SC1090,SC1091 .bashrc fzf/fzf.bash.symlink 2>&1)"
+  then
+    pass "shellcheck"
+  else
+    fail "shellcheck:"; printf '%s\n%s\n' "$out" "${out2:-}" | indent
+  fi
+else
+  echo "  shellcheck not installed, skipping"
+fi
+
+echo ''
+if [ "$status" -eq 0 ]; then echo '  All tests passed.'; else echo '  Some tests failed.'; fi
+exit "$status"
