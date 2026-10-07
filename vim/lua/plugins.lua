@@ -80,6 +80,15 @@ require("lazy").setup({
     cmd = { "DiffviewOpen", "DiffviewFileHistory" },
   },
   {
+    -- Needs the lazygit binary on $PATH
+    "kdheepak/lazygit.nvim",
+    cmd = { "LazyGit", "LazyGitConfig", "LazyGitCurrentFile", "LazyGitFilter", "LazyGitFilterCurrentFile" },
+    keys = {
+      { "<leader>lg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
+    },
+    dependencies = { "nvim-lua/plenary.nvim" },
+  },
+  {
     "akinsho/git-conflict.nvim",
     event = "BufReadPre",
     config = true,
