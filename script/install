@@ -1,10 +1,26 @@
 #!/usr/bin/env bash
 #
-# Run all dotfiles installers.
+# Run all dotfiles installers (topic/install.sh).
+#
+# Only one level deep: submodules and plugin folders (.bash_it, vim/plugged)
+# ship their own install.sh files, and bash-it's would replace ~/.bashrc.
+# A failing installer is reported but doesn't stop the others.
 
-set -e
+cd "$(dirname "$0")"/.. || exit 1
 
-cd "$(dirname $0)"/..
+failed=""
+for installer in */install.sh
+do
+  [ -f "$installer" ] || continue
+  echo "› $installer"
+  if ! "./$installer"
+  then
+    failed="$failed $installer"
+  fi
+done
 
-# find the installers and run them iteratively
-find . -name install.sh | while read installer ; do sh -c "${installer}" ; done
+if [ -n "$failed" ]
+then
+  echo "› failed:$failed"
+  exit 1
+fi

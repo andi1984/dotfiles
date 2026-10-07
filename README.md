@@ -1,95 +1,98 @@
-# holman does dotfiles
+# dotfiles
 
-Your dotfiles are how you personalize your system. These are mine.
+My dotfiles for **macOS** (zsh + oh-my-zsh) and **Ubuntu** (bash + Bash-It),
+based on [holman's dotfiles](https://github.com/holman/dotfiles).
 
-I was a little tired of having long alias files and everything strewn about
-(which is extremely common on other dotfiles projects, too). That led to this
-project being much more topic-centric. I realized I could split a lot of things
-up into the main areas I used (Ruby, git, system libraries, and so on), so I
-structured the project accordingly.
-
-If you're interested in the philosophy behind why projects like these are
-awesome, you might want to [read my post on the
-subject](http://zachholman.com/2010/08/dotfiles-are-meant-to-be-forked/).
-
-## topical
-
-Everything's built around topic areas. If you're adding a new area to your
-forked dotfiles — say, "Java" — you can simply add a `java` directory and put
-files in there. Anything with an extension of `.zsh` will get automatically
-included into your shell. Anything with an extension of `.symlink` will get
-symlinked without extension into `$HOME` when you run `script/bootstrap`.
-
-## what's inside
-
-A lot of stuff. Seriously, a lot of stuff. Check them out in the file browser
-above and see what components may mesh up with you.
-[Fork it](https://github.com/holman/dotfiles/fork), remove what you don't
-use, and build on what you do use.
-
-## components
-
-There's a few special files in the hierarchy.
-
-- **bin/**: Anything in `bin/` will get added to your `$PATH` and be made
-  available everywhere.
-- **topic/\*.zsh**: Any files ending in `.zsh` get loaded into your
-  environment.
-- **topic/path.zsh**: Any file named `path.zsh` is loaded first and is
-  expected to setup `$PATH` or similar.
-- **topic/completion.zsh**: Any file named `completion.zsh` is loaded
-  last and is expected to setup autocomplete.
-- **topic/install.sh**: Any file named `install.sh` is executed when you run `script/install`. To avoid being loaded automatically, its extension is `.sh`, not `.zsh`.
-- **topic/\*.symlink**: Any file ending in `*.symlink` gets symlinked into
-  your `$HOME`. This is so you can keep all of those versioned in your dotfiles
-  but still keep those autoloaded files in your home directory. These get
-  symlinked in when you run `script/bootstrap`.
+The same checkout works on both systems and on machines where some tools are
+missing: every tool hook is guarded, so a machine without `herdr`, `nvm`,
+`rbenv`, `pyenv`, Bash-It, oh-my-zsh, … simply skips that part instead of
+printing errors on every new shell.
 
 ## install
 
-Run this:
-
 ```sh
-git clone https://github.com/holman/dotfiles.git ~/.dotfiles
-cd ~/.dotfiles
+git clone git@github.com:andi1984/dotfiles.git ~/dev/dotfiles
+cd ~/dev/dotfiles
 script/bootstrap
 ```
 
-This will symlink the appropriate files in `.dotfiles` to your home directory.
-Everything is configured and tweaked within `~/.dotfiles`.
+`script/bootstrap`
 
-The main file you'll want to change right off the bat is `zsh/zshrc.symlink`,
-which sets up a few paths that'll be different on your particular machine.
+1. fetches the Bash-It submodule (`.bash_it`), if possible,
+2. symlinks the dotfiles into `$HOME` and `~/.config`, asking what to do with
+   files that already exist (skip, overwrite or back up),
+3. runs `bin/dot`: macOS defaults and Homebrew (macOS only), then every
+   `topic/install.sh`.
 
-`dot` is a simple script that installs some dependencies, sets sane macOS
-defaults, and so on. Tweak this script, and occasionally run `dot` from
-time to time to keep your environment fresh and up-to-date. You can find
-this script in `bin/`.
+Options: `--yes` backs up existing files without asking (the default when
+there is no terminal), `--no-install` only creates the links. Running it again
+is safe; links that are already correct are left alone.
 
-## bugs
+Run `dot` from time to time to update Homebrew and re-run the installers.
 
-I want this to work for everyone; that means when you clone it down it should
-work for you even though you may not have `rbenv` installed, for example. That
-said, I do use this as _my_ dotfiles, so there's a good chance I may break
-something if I forget to make a check for a dependency.
+## layout
 
-If you're brand-new to the project and run into any blockers, please
-[open an issue](https://github.com/holman/dotfiles/issues) on this repository
-and I'd love to get it fixed for you!
+Everything is organized by topic (`git/`, `node/`, `zsh/`, `herdr/`, …):
+
+- **bin/**: added to `$PATH` by both shells.
+- **topic/\*.symlink**: linked to `~/.<name>` by `script/bootstrap`, e.g.
+  `zsh/zshrc.symlink` → `~/.zshrc`, `fzf/fzf.bash.symlink` → `~/.fzf.bash`.
+- **topic/\*.zsh**: loaded by zsh (`git/`, `node/` and `zsh/` only, so vim
+  plugin files are never sourced). `path.zsh` loads first, `completion.zsh` last.
+- **topic/install.sh**: run by `script/install`. Only one level deep, so the
+  installers that ship with Bash-It and vim plugins are never picked up.
+- Files outside that convention are linked explicitly in `script/bootstrap`:
+
+  | repo | linked to |
+  | --- | --- |
+  | `.bashrc` | `~/.bashrc` |
+  | `.bash_it` | `~/.bash_it` |
+  | `vim/` | `~/.config/nvim` |
+  | `kitty/kitty.conf` | `~/.config/kitty/kitty.conf` |
+  | `herdr/config.toml` | `~/.config/herdr/config.toml` (by `herdr/install.sh`) |
+
+## conventions for cross-OS changes
+
+- **Guard every tool.** `command -v tool >/dev/null && …` for commands,
+  `[ -r file ] && source file` for init scripts, `[ -d dir ]` before adding to
+  `$PATH`. `.bashrc` has `has`, `path_prepend` and `source_if` helpers for this.
+- **No absolute home paths.** Use `$HOME`; the user name differs between
+  machines (`/Users/andreassander` vs. `/home/andreas`).
+- **Branch on the OS, not the machine.** `[ "$(uname -s)" = Darwin ]` for
+  macOS-only steps such as `macos/set-defaults.sh` or Homebrew.
+- **Machine-specific settings and secrets go in `~/.localrc`**, which both
+  shells source and which is never committed.
+- **POSIX `sh` for installers**, `bash` for `script/*`. macOS ships bash 3.2,
+  so avoid bash 4+ features in anything that might run under `/bin/bash`.
+
+## herdr
+
+[herdr](https://herdr.dev) uses the default keybindings (prefix `ctrl+b`,
+`prefix+?` lists them). `herdr/install.sh` links the config, removes leftovers
+of the `tmurdr` plugin (its `apply` action rewrites `config.toml` and is not
+undone by `herdr plugin uninstall`), validates the config and reloads a running
+server. On a machine without herdr it only links the config.
+
+New terminals in bash ask which multiplexer to start, offering only the ones
+that are installed. Set `NO_MUX=1` to skip the question.
+
+## testing
+
+```sh
+script/test
+```
+
+Bootstraps into a throwaway `$HOME`, checks the links and that a second run
+changes nothing, then starts bash and zsh with a bare `PATH` (a fresh machine
+without any tools) and with the current one. Any startup error fails the test.
+Shell scripts are linted with shellcheck (or `uvx shellcheck-py` when only
+`uv` is installed).
+
+GitHub Actions runs the same test on `ubuntu-latest` and `macos-latest` for
+every push. The Bash-It fork isn't publicly fetchable, so CI covers the "no Bash-It" path.
 
 ## thanks
 
-I forked [Ryan Bates](http://github.com/ryanb)' excellent
-[dotfiles](http://github.com/ryanb/dotfiles) for a couple years before the
-weight of my changes and tweaks inspired me to finally roll my own. But Ryan's
-dotfiles were an easy way to get into bash customization, and then to jump ship
-to zsh a bit later. A decent amount of the code in these dotfiles stem or are
-inspired from Ryan's original project.
-
-## Customizations
-
-### Ubuntu
-
-On Ubuntu I use [Bash-It](https://bash-it.readthedocs.io/). On Mac I still use Z-shell.
-
-THIS IS TODO! --> Move to bash-it!
+[Zach Holman](https://github.com/holman/dotfiles) for the original structure,
+and [Ryan Bates](http://github.com/ryanb), whose
+[dotfiles](http://github.com/ryanb/dotfiles) inspired it.
