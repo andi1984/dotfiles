@@ -105,6 +105,55 @@ else
   echo "  zsh not installed, skipping"
 fi
 
+echo "› multiplexer prompt"
+# Stub tmux/herdr so picking one only prints a marker.
+stubs="$sandbox/stub-bin"
+mkdir -p "$stubs"
+for mux in tmux herdr
+do
+  printf '#!/bin/sh\necho STUB-%s-STARTED\n' "$mux" > "$stubs/$mux"
+  chmod +x "$stubs/$mux"
+done
+
+# check_mux <label> <expected marker or "none"> <keys> [VAR=value ...] <shell...>
+check_mux () {
+  local label="$1" want="$2" keys="$3"; shift 3
+  local out
+  out="$(cd "$sandbox" && python3 "$root/script/pty-run" "$keys" \
+    env -i HOME="$sandbox" USER="${USER:-user}" PATH="$stubs:$bare_path" TERM=xterm-256color "$@" 2>&1)"
+  case "$want" in
+    none)
+      if [[ $out != *"Multiplexer?"* ]]; then pass "$label"; else fail "$label: prompt shown"; fi ;;
+    prompt-only)
+      if [[ $out == *"Multiplexer? [t]mux / [h]erdr / [Enter] none:"* && $out != *STUB-*-STARTED* ]]
+      then pass "$label"; else fail "$label:"; printf '%s\n' "$out" | tail -5 | indent; fi ;;
+    *)
+      if [[ $out == *"Multiplexer?"* && $out == *"$want"* ]]
+      then pass "$label"; else fail "$label:"; printf '%s\n' "$out" | tail -5 | indent; fi ;;
+  esac
+}
+
+if command -v python3 >/dev/null 2>&1
+then
+  shells=("bash -i")
+  command -v zsh >/dev/null 2>&1 && shells+=("$(command -v zsh) -i")
+  for sh_cmd in "${shells[@]}"
+  do
+    # shellcheck disable=SC2086 # word splitting of "<shell> -i" is intended
+    {
+      name="$(basename "${sh_cmd%% *}")"
+      check_mux "$name: t starts tmux" STUB-tmux-STARTED t $sh_cmd
+      check_mux "$name: h starts herdr" STUB-herdr-STARTED h $sh_cmd
+      check_mux "$name: Enter starts nothing" prompt-only '\r' $sh_cmd
+      check_mux "$name: silent inside herdr" none '' HERDR_ENV=1 $sh_cmd
+      check_mux "$name: silent in VS Code" none '' TERM_PROGRAM=vscode $sh_cmd
+      check_mux "$name: silent in JetBrains" none '' TERMINAL_EMULATOR=JetBrains-JediTerm $sh_cmd
+    }
+  done
+else
+  echo "  python3 not installed, skipping"
+fi
+
 echo "› syntax"
 for f in .bashrc fzf/fzf.bash.symlink script/bootstrap script/install script/test
 do

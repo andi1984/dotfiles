@@ -73,8 +73,10 @@ of the `tmurdr` plugin (its `apply` action rewrites `config.toml` and is not
 undone by `herdr plugin uninstall`), validates the config and reloads a running
 server. On a machine without herdr it only links the config.
 
-New terminals in bash ask which multiplexer to start, offering only the ones
-that are installed. Set `NO_MUX=1` to skip the question.
+New terminals ask which multiplexer to start (bash: end of `.bashrc`, zsh:
+`zsh/mux.zsh`), offering only the ones that are installed. The question is
+skipped inside tmux/herdr, in VS Code and JetBrains terminals, without a TTY,
+or with `NO_MUX=1`.
 
 ## testing
 
@@ -85,6 +87,8 @@ script/test
 Bootstraps into a throwaway `$HOME`, checks the links and that a second run
 changes nothing, then starts bash and zsh with a bare `PATH` (a fresh machine
 without any tools) and with the current one. Any startup error fails the test.
+The multiplexer prompt is driven through a pseudo-terminal (`script/pty-run`)
+with stub `tmux`/`herdr` binaries.
 Shell scripts are linted with shellcheck (or `uvx shellcheck-py` when only
 `uv` is installed).
 

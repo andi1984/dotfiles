@@ -247,8 +247,10 @@ source_if "$DOTFILES/fzf/fzf.bash.symlink"
 
 # Ask which terminal multiplexer to start in a fresh terminal. Only installed
 # multiplexers are offered, and the prompt is skipped entirely when none is
-# installed, when already inside tmux/herdr, without a TTY, or with NO_MUX=1.
-if [ -z "$TMUX" ] && [ -z "$HERDR_ENV" ] && [ -z "$NO_MUX" ] && [ -t 0 ] && [ -t 1 ]; then
+# installed, when already inside tmux/herdr, in IDE terminals (VS Code and
+# forks, JetBrains), without a TTY, or with NO_MUX=1. zsh: see zsh/mux.zsh.
+if [ -z "$TMUX" ] && [ -z "$HERDR_ENV" ] && [ -z "$NO_MUX" ] && [ -t 0 ] && [ -t 1 ] &&
+   [ "${TERM_PROGRAM:-}" != vscode ] && [[ "${TERMINAL_EMULATOR:-}" != JetBrains* ]]; then
   _mux_choices=""
   has tmux && _mux_choices="${_mux_choices}[t]mux / "
   has herdr && _mux_choices="${_mux_choices}[h]erdr / "
