@@ -239,7 +239,17 @@ enter_directory() {
   fi
 }
 
-export PROMPT_COMMAND="enter_directory; ${PROMPT_COMMAND}"
+# Keep PROMPT_COMMAND a plain shell variable. Exporting it leaked entries such
+# as __vte_prompt_command (a function /etc/profile.d/vte-2.91.sh defines only in
+# the VTE terminal's shell) into child shells (tmux, herdr, `bash`), which then
+# failed with "__vte_prompt_command: command not found" on every prompt.
+export -n PROMPT_COMMAND
+# Shells started before this fix may still inherit the stale value: stub it.
+declare -F __vte_prompt_command >/dev/null || __vte_prompt_command() { :; }
+case ";${PROMPT_COMMAND//[[:space:]]/};" in
+  *";enter_directory;"*) ;;
+  *) PROMPT_COMMAND="enter_directory${PROMPT_COMMAND:+; $PROMPT_COMMAND}" ;;
+esac
 
 # fzf key bindings and completion. bash-it's fzf plugin may already have
 # loaded the same file through ~/.fzf.bash; it only initializes once.
@@ -262,3 +272,7 @@ if [ -z "$TMUX" ] && [ -z "$HERDR_ENV" ] && [ -z "$NO_MUX" ] && [ -t 0 ] && [ -t
   fi
   unset _mux _mux_choices
 fi
+
+# >>> railway initialize >>>
+source "$HOME/.railway/env"
+# <<< railway initialize <<<
