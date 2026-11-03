@@ -211,8 +211,15 @@ export SCM_CHECK=true
 bind 'set show-all-if-ambiguous on'
 bind 'TAB:menu-complete'
 
-# Load Bash It
-source_if "$BASH_IT/bash_it.sh"
+# Load Bash It. Sourced at top level, not through source_if: bash-it (and the
+# bash-preexec it vendors) use `declare` for globals such as precmd_functions.
+# Inside a function `declare` creates locals, which vanish when the function
+# returns, so the theme's prompt hook was dropped and PS1 stayed the distro
+# default without any git info.
+if [ -r "$BASH_IT/bash_it.sh" ]; then
+  # shellcheck source=/dev/null
+  . "$BASH_IT/bash_it.sh"
+fi
 
 # --- interactive extras ------------------------------------------------------
 
