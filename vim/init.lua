@@ -13,7 +13,7 @@ vim.g.maplocalleader = " "
 
 -- Load core configuration
 require("opts")
-require("plugins") -- lazy.nvim handles plugin loading
+require("config.lazy") -- lazy.nvim + lua/plugins/*.lua
 require("keymap")
 require("config.lsp") -- Native Neovim 0.11 LSP config
 
