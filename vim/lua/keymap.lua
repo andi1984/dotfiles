@@ -29,27 +29,16 @@ map("n", "<leader>ai", "mzgg=G`z", { desc = "Auto-indent file" })
 map({ "n", "v" }, "<leader>y", '"+y', { desc = "Copy to clipboard" })
 map({ "n", "v" }, "<leader>p", '"+p', { desc = "Paste from clipboard" })
 
--- Search with context (frontend/backend)
+-- Live grep limited to frontend/backend files (snacks picker)
 map("n", "<leader>sfe", function()
-  local topic = vim.fn.input("fe topic: ")
-  if topic ~= "" then
-    vim.cmd("Rg " .. vim.fn.fnameescape(topic) .. ' -g "*.{js,jsx,ts,tsx,css,scss,sass,html}"')
-  end
+  Snacks.picker.grep({ title = "Grep frontend", glob = "*.{js,jsx,ts,tsx,css,scss,sass,html}" })
 end, { desc = "Search frontend files" })
 
 map("n", "<leader>sbe", function()
-  local topic = vim.fn.input("be topic: ")
-  if topic ~= "" then
-    vim.cmd("Rg " .. vim.fn.fnameescape(topic) .. ' -g "*.{jinja2,py,rb,php,yml,yaml}"')
-  end
+  Snacks.picker.grep({ title = "Grep backend", glob = "*.{jinja2,py,rb,php,yml,yaml}" })
 end, { desc = "Search backend files" })
 
-map("n", "<leader>sg", function()
-  local topic = vim.fn.input("topic: ")
-  if topic ~= "" then
-    vim.cmd("Rg " .. vim.fn.fnameescape(topic))
-  end
-end, { desc = "Search all files" })
+map("n", "<leader>sg", function() Snacks.picker.grep() end, { desc = "Search all files" })
 
 -- EasyAlign in markdown
 vim.api.nvim_create_autocmd("FileType", {

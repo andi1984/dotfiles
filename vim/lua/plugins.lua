@@ -14,8 +14,48 @@ require("lazy").setup({
   -- General
   --------------------------------------------------------------------------------
   {
-    "mhinz/vim-startify",
-    lazy = false, -- dashboard should load immediately
+    -- Picker, dashboard, indent guides, notifier, input and lazygit in one.
+    "folke/snacks.nvim",
+    priority = 1000,
+    lazy = false,
+    opts = {
+      dashboard = { enabled = true },
+      indent = { enabled = true },
+      input = { enabled = true },
+      notifier = { enabled = true },
+      lazygit = { enabled = true },
+      picker = { enabled = true, ui_select = true },
+    },
+    keys = {
+      { "<leader>ff", function() Snacks.picker.files({ layout = "vertical" }) end, desc = "Find files" },
+      { "<leader>fb", function() Snacks.picker.buffers({ layout = "vertical" }) end, desc = "Buffers" },
+      { "<leader>fg", function() Snacks.picker.grep() end, desc = "Live grep" },
+      { "<leader>fi", function() Snacks.picker.grep() end, desc = "Ripgrep search" },
+      { "<leader>fh", function() Snacks.picker.help() end, desc = "Help tags" },
+      -- was fzf.vim :Find - fixed strings, hidden files, from the git root
+      { "<leader>fa", function()
+        Snacks.picker.grep({ regex = false, hidden = true, cwd = Snacks.git.get_root() })
+      end, desc = "Grep literal (git root)" },
+      { "<leader>fw", function() Snacks.picker.grep_word() end, desc = "Grep word under cursor", mode = { "n", "x" } },
+      { "<leader>ss", function() Snacks.picker.lsp_symbols() end, desc = "Jump to LSP symbol" },
+      { "<leader>lg", function() Snacks.lazygit() end, desc = "LazyGit" },
+    },
+    init = function()
+      -- LSP progress in the notifier (replaces fidget.nvim)
+      vim.api.nvim_create_autocmd("LspProgress", {
+        callback = function(ev)
+          local spinner = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
+          vim.notify(vim.lsp.status(), vim.log.levels.INFO, {
+            id = "lsp_progress",
+            title = "LSP Progress",
+            opts = function(notif)
+              notif.icon = ev.data.params.value.kind == "end" and " "
+                or spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
+            end,
+          })
+        end,
+      })
+    end,
   },
   {
     "norcalli/nvim-colorizer.lua",
@@ -49,14 +89,6 @@ require("lazy").setup({
     event = "InsertEnter",
     config = true,
   },
-  {
-    "lukas-reineke/indent-blankline.nvim",
-    event = "BufReadPre",
-    main = "ibl",
-    config = function()
-      require("ibl").setup()
-    end,
-  },
 
   --------------------------------------------------------------------------------
   -- Git
@@ -64,15 +96,6 @@ require("lazy").setup({
   {
     "sindrets/diffview.nvim",
     cmd = { "DiffviewOpen", "DiffviewFileHistory" },
-  },
-  {
-    -- Needs the lazygit binary on $PATH
-    "kdheepak/lazygit.nvim",
-    cmd = { "LazyGit", "LazyGitConfig", "LazyGitCurrentFile", "LazyGitFilter", "LazyGitFilterCurrentFile" },
-    keys = {
-      { "<leader>lg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
-    },
-    dependencies = { "nvim-lua/plenary.nvim" },
   },
   {
     "akinsho/git-conflict.nvim",
@@ -162,26 +185,9 @@ require("lazy").setup({
   },
 
   --------------------------------------------------------------------------------
-  -- Telescope Fuzzy Finder
+  -- Shared libraries
   --------------------------------------------------------------------------------
   { "nvim-lua/plenary.nvim", lazy = true },
-  {
-    "nvim-telescope/telescope.nvim",
-    cmd = "Telescope",
-    keys = {
-      { "<leader>ff", function() require("telescope.builtin").find_files({ layout_strategy = "vertical" }) end, desc = "Find files" },
-      { "<leader>fb", function() require("telescope.builtin").buffers({ layout_strategy = "vertical" }) end, desc = "Buffers" },
-      { "<leader>fg", function() require("telescope.builtin").live_grep() end, desc = "Live grep" },
-      { "<leader>fh", function() require("telescope.builtin").help_tags() end, desc = "Help tags" },
-    },
-    dependencies = {
-      "nvim-telescope/telescope-fzy-native.nvim",
-    },
-    config = function()
-      require("telescope").setup()
-      require("telescope").load_extension("fzy_native")
-    end,
-  },
 
   --------------------------------------------------------------------------------
   -- Themes & UI
@@ -200,42 +206,6 @@ require("lazy").setup({
   },
   { "comfysage/evergarden", lazy = true, priority = 1000 },
   { "MunifTanjim/nui.nvim", lazy = true },
-
-  --------------------------------------------------------------------------------
-  -- FZF (keeping for :Rg command)
-  --------------------------------------------------------------------------------
-  {
-    "junegunn/fzf",
-    build = "./install --bin", -- --all would rewrite ~/.fzf.bash (symlinked into this repo)
-  },
-  {
-    "junegunn/fzf.vim",
-    cmd = { "Files", "Rg", "Buffers", "GFiles" },
-    keys = {
-      { "<leader>fi", ":Rg ", desc = "Ripgrep search" },
-    },
-    dependencies = { "junegunn/fzf" },
-  },
-
-  --------------------------------------------------------------------------------
-  -- Namu (symbol picker)
-  --------------------------------------------------------------------------------
-  {
-    "bassamsdata/namu.nvim",
-    keys = {
-      { "<leader>ss", ":Namu symbols<cr>", desc = "Jump to LSP symbol" },
-    },
-    config = function()
-      require("namu").setup({
-        namu_symbols = {
-          enable = true,
-          options = { display = { mode = "text" } },
-        },
-        colorscheme = { enable = false },
-        ui_select = { enable = false },
-      })
-    end,
-  },
 
   --------------------------------------------------------------------------------
   -- LSP & Linting
@@ -396,11 +366,6 @@ require("lazy").setup({
         icons = { folder_closed = " ", folder_open = " " },
       })
     end,
-  },
-  {
-    "j-hui/fidget.nvim",
-    event = "LspAttach",
-    config = true,
   },
 
   --------------------------------------------------------------------------------
