@@ -14,15 +14,54 @@ require("lazy").setup({
   -- General
   --------------------------------------------------------------------------------
   {
-    "mhinz/vim-startify",
-    lazy = false, -- dashboard should load immediately
+    -- Picker, dashboard, indent guides, notifier, input and lazygit in one.
+    "folke/snacks.nvim",
+    priority = 1000,
+    lazy = false,
+    opts = {
+      dashboard = { enabled = true },
+      indent = { enabled = true },
+      input = { enabled = true },
+      notifier = { enabled = true },
+      lazygit = { enabled = true },
+      picker = { enabled = true, ui_select = true },
+    },
+    keys = {
+      { "<leader>ff", function() Snacks.picker.files({ layout = "vertical" }) end, desc = "Find files" },
+      { "<leader>fb", function() Snacks.picker.buffers({ layout = "vertical" }) end, desc = "Buffers" },
+      { "<leader>fg", function() Snacks.picker.grep() end, desc = "Live grep" },
+      { "<leader>fi", function() Snacks.picker.grep() end, desc = "Ripgrep search" },
+      { "<leader>fh", function() Snacks.picker.help() end, desc = "Help tags" },
+      -- was fzf.vim :Find - fixed strings, hidden files, from the git root
+      { "<leader>fa", function()
+        Snacks.picker.grep({ regex = false, hidden = true, cwd = Snacks.git.get_root() })
+      end, desc = "Grep literal (git root)" },
+      { "<leader>fw", function() Snacks.picker.grep_word() end, desc = "Grep word under cursor", mode = { "n", "x" } },
+      { "<leader>ss", function() Snacks.picker.lsp_symbols() end, desc = "Jump to LSP symbol" },
+      { "<leader>lg", function() Snacks.lazygit() end, desc = "LazyGit" },
+    },
+    init = function()
+      -- LSP progress in the notifier (replaces fidget.nvim)
+      vim.api.nvim_create_autocmd("LspProgress", {
+        callback = function(ev)
+          local spinner = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
+          vim.notify(vim.lsp.status(), vim.log.levels.INFO, {
+            id = "lsp_progress",
+            title = "LSP Progress",
+            opts = function(notif)
+              notif.icon = ev.data.params.value.kind == "end" and " "
+                or spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
+            end,
+          })
+        end,
+      })
+    end,
   },
   {
-    "norcalli/nvim-colorizer.lua",
+    -- Highlights hex/rgb/hsl/named colors in place
+    "brenoprata10/nvim-highlight-colors",
     event = "BufReadPre",
-    config = function()
-      require("colorizer").setup()
-    end,
+    opts = {},
   },
   {
     "folke/which-key.nvim",
@@ -49,14 +88,6 @@ require("lazy").setup({
     event = "InsertEnter",
     config = true,
   },
-  {
-    "lukas-reineke/indent-blankline.nvim",
-    event = "BufReadPre",
-    main = "ibl",
-    config = function()
-      require("ibl").setup()
-    end,
-  },
 
   --------------------------------------------------------------------------------
   -- Git
@@ -64,15 +95,6 @@ require("lazy").setup({
   {
     "sindrets/diffview.nvim",
     cmd = { "DiffviewOpen", "DiffviewFileHistory" },
-  },
-  {
-    -- Needs the lazygit binary on $PATH
-    "kdheepak/lazygit.nvim",
-    cmd = { "LazyGit", "LazyGitConfig", "LazyGitCurrentFile", "LazyGitFilter", "LazyGitFilterCurrentFile" },
-    keys = {
-      { "<leader>lg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
-    },
-    dependencies = { "nvim-lua/plenary.nvim" },
   },
   {
     "akinsho/git-conflict.nvim",
@@ -162,26 +184,9 @@ require("lazy").setup({
   },
 
   --------------------------------------------------------------------------------
-  -- Telescope Fuzzy Finder
+  -- Shared libraries
   --------------------------------------------------------------------------------
   { "nvim-lua/plenary.nvim", lazy = true },
-  {
-    "nvim-telescope/telescope.nvim",
-    cmd = "Telescope",
-    keys = {
-      { "<leader>ff", function() require("telescope.builtin").find_files({ layout_strategy = "vertical" }) end, desc = "Find files" },
-      { "<leader>fb", function() require("telescope.builtin").buffers({ layout_strategy = "vertical" }) end, desc = "Buffers" },
-      { "<leader>fg", function() require("telescope.builtin").live_grep() end, desc = "Live grep" },
-      { "<leader>fh", function() require("telescope.builtin").help_tags() end, desc = "Help tags" },
-    },
-    dependencies = {
-      "nvim-telescope/telescope-fzy-native.nvim",
-    },
-    config = function()
-      require("telescope").setup()
-      require("telescope").load_extension("fzy_native")
-    end,
-  },
 
   --------------------------------------------------------------------------------
   -- Themes & UI
@@ -202,54 +207,25 @@ require("lazy").setup({
   { "MunifTanjim/nui.nvim", lazy = true },
 
   --------------------------------------------------------------------------------
-  -- FZF (keeping for :Rg command)
-  --------------------------------------------------------------------------------
-  {
-    "junegunn/fzf",
-    build = "./install --bin", -- --all would rewrite ~/.fzf.bash (symlinked into this repo)
-  },
-  {
-    "junegunn/fzf.vim",
-    cmd = { "Files", "Rg", "Buffers", "GFiles" },
-    keys = {
-      { "<leader>fi", ":Rg ", desc = "Ripgrep search" },
-    },
-    dependencies = { "junegunn/fzf" },
-  },
-
-  --------------------------------------------------------------------------------
-  -- Namu (symbol picker)
-  --------------------------------------------------------------------------------
-  {
-    "bassamsdata/namu.nvim",
-    keys = {
-      { "<leader>ss", ":Namu symbols<cr>", desc = "Jump to LSP symbol" },
-    },
-    config = function()
-      require("namu").setup({
-        namu_symbols = {
-          enable = true,
-          options = { display = { mode = "text" } },
-        },
-        colorscheme = { enable = false },
-        ui_select = { enable = false },
-      })
-    end,
-  },
-
-  --------------------------------------------------------------------------------
   -- LSP & Linting
   --------------------------------------------------------------------------------
   {
     "mason-org/mason.nvim",
-    cmd = "Mason",
+    lazy = false, -- puts mason/bin on PATH before any LSP/formatter starts
     config = true,
   },
   {
     "mason-org/mason-lspconfig.nvim",
     event = "BufReadPre",
     dependencies = { "mason-org/mason.nvim" },
-    config = true,
+    -- config/lsp.lua decides which servers run; mason only puts binaries on PATH
+    opts = { automatic_enable = false },
+  },
+  {
+    -- Server defaults only (lsp/*.lua: cmd, filetypes, root detection).
+    -- Overrides and vim.lsp.enable() live in config/lsp.lua.
+    "neovim/nvim-lspconfig",
+    lazy = false,
   },
   {
     "pmizio/typescript-tools.nvim",
@@ -288,27 +264,14 @@ require("lazy").setup({
     end,
   },
   {
-    "dense-analysis/ale",
-    event = { "BufReadPre", "BufNewFile" },
+    -- Format on save (replaces ALE fixers). Linting comes from LSP servers.
+    "stevearc/conform.nvim",
+    event = "BufWritePre",
+    cmd = "ConformInfo",
+    keys = {
+      { "<leader>F", function() require("conform").format({ async = true, lsp_format = "fallback" }) end, desc = "Format buffer" },
+    },
     config = function()
-      vim.g.ale_lint_on_enter = 0
-      vim.g.ale_lint_on_save = 1
-      vim.g.ale_sign_error = "●"
-      vim.g.ale_sign_warning = "."
-      vim.g.ale_linters = { rust = { "analyzer" } }
-      vim.g.ale_fixers = {
-        javascript = { "prettier" },
-        javascriptreact = { "prettier" },
-        typescript = { "prettier" },
-        typescriptreact = { "prettier" },
-        css = { "prettier" },
-        vue = { "prettier" },
-        rust = { "rustfmt" },
-      }
-      vim.g.ale_fix_on_save = 1
-
-      -- Python: use the formatter the project configures, else ruff_format.
-      -- ALE resolves executables from the project's .venv before $PATH.
       local function read(path)
         local f = io.open(path, "r")
         if not f then return "" end
@@ -317,7 +280,8 @@ require("lazy").setup({
         return content
       end
 
-      local function python_fixers(bufnr)
+      -- Python: use the formatter the project configures, else ruff_format.
+      local function python_formatters(bufnr)
         local root = vim.fs.root(bufnr, {
           "pyproject.toml", "setup.cfg", "tox.ini", "ruff.toml", ".ruff.toml",
           ".style.yapf", ".isort.cfg", ".pre-commit-config.yaml", ".git",
@@ -331,8 +295,8 @@ require("lazy").setup({
 
         local isort = pyproject:find("%[tool%.isort%]") or exists(".isort.cfg")
           or setup_cfg:find("%[isort%]") or precommit:find("id:%s*isort")
-        local function with_isort(fixer)
-          return isort and { "isort", fixer } or { fixer }
+        local function with_isort(formatter)
+          return isort and { "isort", formatter } or { formatter }
         end
 
         if pyproject:find("%[tool%.black%]") or precommit:find("id:%s*black") then
@@ -343,24 +307,47 @@ require("lazy").setup({
           return with_isort("autopep8")
         elseif pyproject:find("%[tool%.ruff") or exists("ruff.toml") or exists(".ruff.toml")
           or precommit:find("id:%s*ruff%-format") then
-          -- `ruff format` doesn't sort imports; run ruff's isort rule (I) first.
-          -- Only that rule is applied, honouring [tool.ruff.lint.isort].
-          vim.b[bufnr].ale_python_ruff_options = "--select I"
-          return { "ruff", "ruff_format" }
+          -- `ruff format` doesn't sort imports; apply ruff's isort rule (I) first,
+          -- honouring [tool.ruff.lint.isort].
+          return { "ruff_organize_imports", "ruff_format" }
         elseif vim.uv.fs_stat(root .. "/.venv/bin/black") then
           return with_isort("black")
         end
         return with_isort("ruff_format")
       end
 
-      vim.api.nvim_create_autocmd("FileType", {
-        pattern = "python",
-        callback = function(args)
-          vim.b[args.buf].ale_fixers = { python = python_fixers(args.buf) }
-        end,
-      })
+      -- Prefer the project's .venv binary over $PATH (like ALE did).
+      local function venv_command(name)
+        return function(_, ctx)
+          local root = vim.fs.root(ctx.buf, ".venv")
+          local bin = root and (root .. "/.venv/bin/" .. name)
+          if bin and vim.fn.executable(bin) == 1 then return bin end
+          return name
+        end
+      end
 
-      vim.keymap.set("n", "<C-e>", "<Plug>(ale_next_wrap)", { silent = true })
+      local prettier = { "prettier" } -- conform prefers node_modules/.bin/prettier
+      require("conform").setup({
+        formatters_by_ft = {
+          javascript = prettier,
+          javascriptreact = prettier,
+          typescript = prettier,
+          typescriptreact = prettier,
+          css = prettier,
+          vue = prettier,
+          rust = { "rustfmt" },
+          python = python_formatters,
+        },
+        formatters = {
+          black = { command = venv_command("black") },
+          isort = { command = venv_command("isort") },
+          yapf = { command = venv_command("yapf") },
+          autopep8 = { command = venv_command("autopep8") },
+          ruff_format = { command = venv_command("ruff") },
+          ruff_organize_imports = { command = venv_command("ruff") },
+        },
+        format_on_save = { timeout_ms = 2000, lsp_format = "never" },
+      })
     end,
   },
   {
@@ -378,11 +365,6 @@ require("lazy").setup({
         icons = { folder_closed = " ", folder_open = " " },
       })
     end,
-  },
-  {
-    "j-hui/fidget.nvim",
-    event = "LspAttach",
-    config = true,
   },
 
   --------------------------------------------------------------------------------
@@ -459,8 +441,17 @@ require("lazy").setup({
     ft = { "html", "css", "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "astro" },
   },
   {
-    "AndrewRadev/tagalong.vim",
-    ft = { "html", "xml", "jsx", "javascriptreact", "typescriptreact", "vue" },
+    -- Rename the paired tag while editing one (like tagalong). Auto-closing
+    -- stays off, matching typescript-tools' jsx_close_tag = false.
+    "windwp/nvim-ts-autotag",
+    ft = { "html", "xml", "javascriptreact", "typescriptreact", "vue", "astro" },
+    opts = {
+      opts = {
+        enable_close = false,
+        enable_rename = true,
+        enable_close_on_slash = false,
+      },
+    },
   },
   {
     "David-Kunz/jester",
@@ -488,23 +479,19 @@ require("lazy").setup({
     config = true,
   },
   {
-    "numToStr/Comment.nvim",
-    keys = {
-      { "<leader>/", "<Plug>(comment_toggle_linewise_current)", desc = "Toggle comment" },
-      { "gc", mode = { "n", "v" }, desc = "Comment toggle" },
-    },
-    dependencies = { "JoosepAlviste/nvim-ts-context-commentstring" },
-    config = function()
-      require("Comment").setup({
-        pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook(),
-      })
-    end,
-  },
-  {
+    -- Context-aware commentstring (JSX, Vue, embedded CSS...) for Neovim's
+    -- built-in gc/gcc commenting.
     "JoosepAlviste/nvim-ts-context-commentstring",
     lazy = true,
-    config = function()
-      require("ts_context_commentstring").setup({ enable_autocmd = false })
+    opts = { enable_autocmd = false },
+    init = function()
+      local get_option = vim.filetype.get_option
+      ---@diagnostic disable-next-line: duplicate-set-field
+      vim.filetype.get_option = function(filetype, option)
+        return option == "commentstring"
+            and require("ts_context_commentstring.internal").calculate_commentstring()
+          or get_option(filetype, option)
+      end
     end,
   },
   {
@@ -521,64 +508,50 @@ require("lazy").setup({
     config = true,
   },
   {
-    "mhinz/vim-grepper",
-    cmd = { "Grepper", "GrepperRg" },
+    -- Project-wide search & replace with a live preview
+    "MagicDuck/grug-far.nvim",
+    cmd = "GrugFar",
     keys = {
-      { "<leader>R", ":let @s='\\<'.expand('<cword>').'\\>'<CR>:Grepper -cword -noprompt<CR>:cfdo %s/<C-r>s//g | update<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>", desc = "Replace word in project" },
+      { "<leader>R", function()
+        require("grug-far").open({
+          prefills = { search = vim.fn.expand("<cword>"), flags = "--word-regexp" },
+        })
+      end, desc = "Replace word in project" },
     },
+    opts = {},
   },
 
   --------------------------------------------------------------------------------
   -- Autocomplete
   --------------------------------------------------------------------------------
   {
-    "hrsh7th/nvim-cmp",
+    "saghen/blink.cmp",
+    version = "1.*", -- release tags ship the prebuilt fuzzy matcher
     event = { "InsertEnter", "CmdlineEnter" },
-    dependencies = {
-      "hrsh7th/cmp-nvim-lsp",
-      "hrsh7th/cmp-buffer",
-      "hrsh7th/cmp-path",
-      "hrsh7th/cmp-cmdline",
-      "petertriho/cmp-git",
-      "hrsh7th/cmp-emoji",
-      "hrsh7th/cmp-vsnip",
-      "hrsh7th/vim-vsnip",
-    },
-    config = function()
-      local cmp = require("cmp")
-      cmp.setup({
-        snippet = {
-          expand = function(args)
-            vim.fn["vsnip#anonymous"](args.body)
-          end,
+    dependencies = { "Kaiser-Yang/blink-cmp-git" },
+    opts = {
+      keymap = {
+        -- <CR> accepts, <C-Space> opens, <C-e> closes, <C-b>/<C-f> scroll docs
+        preset = "enter",
+        -- leave <Tab>/<S-Tab> to tabout.nvim and native snippet jumps
+        ["<Tab>"] = false,
+        ["<S-Tab>"] = false,
+      },
+      completion = {
+        documentation = { auto_show = true, auto_show_delay_ms = 300 },
+      },
+      sources = {
+        default = { "lsp", "path", "snippets", "buffer" },
+        per_filetype = { gitcommit = { "git", "buffer" } },
+        providers = {
+          git = { module = "blink-cmp-git", name = "Git" },
         },
-        mapping = cmp.mapping.preset.insert({
-          ["<C-b>"] = cmp.mapping.scroll_docs(-4),
-          ["<C-f>"] = cmp.mapping.scroll_docs(4),
-          ["<C-Space>"] = cmp.mapping.complete(),
-          ["<C-e>"] = cmp.mapping.abort(),
-          ["<CR>"] = cmp.mapping.confirm({ select = true }),
-        }),
-        sources = cmp.config.sources({
-          { name = "nvim_lsp" },
-          { name = "vsnip" },
-          { name = "buffer" },
-          { name = "path" },
-          { name = "emoji" },
-        }),
-      })
-      cmp.setup.filetype("gitcommit", {
-        sources = cmp.config.sources({ { name = "cmp_git" } }, { { name = "buffer" } }),
-      })
-      cmp.setup.cmdline({ "/", "?" }, {
-        mapping = cmp.mapping.preset.cmdline(),
-        sources = { { name = "buffer" } },
-      })
-      cmp.setup.cmdline(":", {
-        mapping = cmp.mapping.preset.cmdline(),
-        sources = cmp.config.sources({ { name = "path" } }, { { name = "cmdline" } }),
-      })
-    end,
+      },
+      cmdline = {
+        completion = { menu = { auto_show = true } },
+      },
+      signature = { enabled = true },
+    },
   },
 
   --------------------------------------------------------------------------------
@@ -595,10 +568,7 @@ require("lazy").setup({
           map = "<M-e>",
         },
       })
-      -- Integration with nvim-cmp
-      local cmp_autopairs = require("nvim-autopairs.completion.cmp")
-      local cmp = require("cmp")
-      cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
+      -- blink.cmp adds brackets after accepted functions itself
     end,
   },
 

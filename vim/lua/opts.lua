@@ -22,6 +22,9 @@ opt.signcolumn = "yes"
 opt.splitright = true
 opt.splitbelow = true
 opt.updatetime = 300
+if vim.fn.executable("rg") == 1 then
+  opt.grepprg = "rg --vimgrep --smart-case"
+end
 
 -- Command line (lualine already shows the mode)
 opt.cmdheight = 1

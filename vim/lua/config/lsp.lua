@@ -22,7 +22,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
     -- Actions
     vim.keymap.set('n', '<Leader>rn', vim.lsp.buf.rename, opts)
     vim.keymap.set('n', '<Leader>ca', vim.lsp.buf.code_action, opts)
-    vim.keymap.set('n', '<Leader>F', function() vim.lsp.buf.format({ async = true }) end, opts)
 
     -- Seldomly used
     vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
@@ -34,14 +33,21 @@ vim.api.nvim_create_autocmd('LspAttach', {
   end,
 })
 
--- LSP server configurations using Neovim 0.11 native vim.lsp.config
--- NOTE: native vim.lsp.config does NOT provide default cmd/filetypes like
--- nvim-lspconfig did — each server needs them explicitly.
+-- Diagnostic signs (kept from the ALE setup)
+vim.diagnostic.config({
+  signs = {
+    text = {
+      [vim.diagnostic.severity.ERROR] = "●",
+      [vim.diagnostic.severity.WARN] = ".",
+    },
+  },
+})
+
+-- Server configs: nvim-lspconfig ships the defaults (cmd, filetypes, root
+-- detection) in its lsp/*.lua files. Only overrides live here; they are
+-- merged on top of those defaults.
 
 vim.lsp.config('rust_analyzer', {
-  cmd = { 'rust-analyzer' },
-  filetypes = { 'rust' },
-  root_markers = { 'Cargo.toml', 'rust-project.json', '.git' },
   settings = {
     ["rust-analyzer"] = {
       assist = {
@@ -61,32 +67,10 @@ vim.lsp.config('rust_analyzer', {
   },
 })
 
--- Only start inside Deno projects. With plain root_markers Neovim still
--- starts the server (root_dir = nil) in Node projects.
-vim.lsp.config('denols', {
-  cmd = { 'deno', 'lsp' },
-  filetypes = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' },
-  root_dir = function(bufnr, on_dir)
-    local root = vim.fs.root(bufnr, { 'deno.json', 'deno.jsonc' })
-    if root then on_dir(root) end
-  end,
-})
-
 -- Python: basedpyright (installed via `uv tool install basedpyright`).
 -- Resolves imports against the project's `.venv` (uv/poetry/venv) so
 -- third-party packages get hover docs, go-to-definition and semantic
 -- highlighting. Falls back to the system interpreter when no `.venv` exists.
-local python_root_markers = {
-  'pyproject.toml',
-  'uv.lock',
-  'setup.py',
-  'setup.cfg',
-  'requirements.txt',
-  'Pipfile',
-  'tox.ini',
-  '.git',
-}
-
 local function venv_python(root)
   if not root then return nil end
   local candidate = root .. '/.venv/bin/python'
@@ -97,9 +81,6 @@ local function venv_python(root)
 end
 
 vim.lsp.config('basedpyright', {
-  cmd = { 'basedpyright-langserver', '--stdio' },
-  filetypes = { 'python' },
-  root_markers = python_root_markers,
   settings = {
     basedpyright = {
       analysis = {
@@ -120,11 +101,8 @@ vim.lsp.config('basedpyright', {
   end,
 })
 
--- Ruff LSP: linting + formatting (installed via `uv tool install ruff`).
+-- Ruff LSP: linting (installed via `uv tool install ruff`).
 vim.lsp.config('ruff', {
-  cmd = { 'ruff', 'server' },
-  filetypes = { 'python' },
-  root_markers = python_root_markers,
   init_options = {
     settings = {
       logLevel = 'info',
@@ -132,60 +110,51 @@ vim.lsp.config('ruff', {
   },
 })
 
-vim.lsp.config('gopls', {
-  cmd = { 'gopls' },
-  filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
-  root_markers = { 'go.work', 'go.mod', '.git' },
-})
-
-vim.lsp.config('vue_ls', {
-  cmd = { 'vue-language-server', '--stdio' },
-  filetypes = { 'vue' },
-  root_markers = { 'package.json', '.git' },
-})
-
+-- lspconfig falls back to any `.git` root (for Tailwind v4), which would run
+-- the server in every repo. Only start with a Tailwind/PostCSS config or a
+-- package.json that depends on tailwindcss.
 vim.lsp.config('tailwindcss', {
-  cmd = { 'tailwindcss-language-server', '--stdio' },
-  filetypes = {
-    'html', 'css', 'scss', 'javascript', 'javascriptreact',
-    'typescript', 'typescriptreact', 'vue', 'astro',
-  },
-  -- Only start in Tailwind projects (not every repo with a .git dir)
   root_dir = function(bufnr, on_dir)
-    local root = vim.fs.root(bufnr, {
-      'tailwind.config.js', 'tailwind.config.cjs', 'tailwind.config.mjs',
-      'tailwind.config.ts', 'postcss.config.js',
-    })
-    if root then on_dir(root) end
+    local fname = vim.api.nvim_buf_get_name(bufnr)
+    local markers = require('lspconfig.util').insert_package_json({
+      'tailwind.config.js', 'tailwind.config.cjs', 'tailwind.config.mjs', 'tailwind.config.ts',
+      'postcss.config.js', 'postcss.config.cjs', 'postcss.config.mjs', 'postcss.config.ts',
+    }, 'tailwindcss', fname)
+    local found = vim.fs.find(markers, { path = fname, upward = true })[1]
+    if found then on_dir(vim.fs.dirname(found)) end
   end,
 })
 
-vim.lsp.config('jdtls', {
-  -- mason's jdtls wrapper picks a per-project data dir automatically
-  cmd = { 'jdtls' },
-  filetypes = { 'java' },
-  root_markers = {
-    'settings.gradle', 'settings.gradle.kts',
-    'build.gradle', 'build.gradle.kts',
-    'pom.xml', 'mvnw', 'gradlew',
-    '.git',
-  },
-})
-
--- JetBrains Kotlin LSP (mason package `kotlin-lsp`, binary `intellij-server`)
+-- Mason's kotlin-lsp package exposes the binary as `intellij-server`
 vim.lsp.config('kotlin_lsp', {
   cmd = { 'intellij-server', '--stdio' },
-  filetypes = { 'kotlin' },
-  root_markers = {
-    'settings.gradle', 'settings.gradle.kts',
-    'build.gradle', 'build.gradle.kts',
-    'pom.xml', 'gradlew',
-    '.git',
+})
+
+-- Vue hybrid mode: vue_ls handles templates/CSS and forwards TS requests to
+-- vtsls, which loads @vue/typescript-plugin from mason's vue-language-server.
+-- vtsls runs for .vue only; plain TS/JS uses typescript-tools.nvim.
+vim.lsp.config('vtsls', {
+  filetypes = { 'vue' },
+  settings = {
+    vtsls = {
+      tsserver = {
+        globalPlugins = {
+          {
+            name = '@vue/typescript-plugin',
+            location = vim.fn.stdpath('data')
+              .. '/mason/packages/vue-language-server/node_modules/@vue/language-server',
+            languages = { 'vue' },
+            configNamespace = 'typescript',
+          },
+        },
+      },
+    },
   },
 })
 
--- Enable all configured servers
+-- eslint: vscode-eslint-language-server (mason `eslint-lsp`); lspconfig only
+-- starts it in projects with an eslint config.
 vim.lsp.enable({
-  'rust_analyzer', 'denols', 'basedpyright', 'ruff', 'gopls', 'vue_ls', 'tailwindcss',
-  'jdtls', 'kotlin_lsp',
+  'rust_analyzer', 'denols', 'basedpyright', 'ruff', 'gopls', 'vue_ls', 'vtsls', 'tailwindcss',
+  'eslint', 'jdtls', 'kotlin_lsp',
 })

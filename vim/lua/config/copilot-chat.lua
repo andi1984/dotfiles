@@ -83,48 +83,6 @@ chat.setup({
       end,
     },
   },
-  contexts = {
-    vectorspace = {
-      description = "Semantic search through workspace using vector embeddings.",
-      schema = {
-        type = "object",
-        required = { "query" },
-        properties = {
-          query = {
-            type = "string",
-            description = "Natural language query to find relevant code.",
-          },
-          max = {
-            type = "integer",
-            description = "Maximum number of results to return.",
-            default = 10,
-          },
-        },
-      },
-      resolve = function(input, source, prompt)
-        local embeddings = cutils.curl_post("http://localhost:8000/query", {
-          json_request = true,
-          json_response = true,
-          body = {
-            dir = source.cwd(),
-            text = input.query or prompt,
-            max = input.max,
-          },
-        }).body
-
-        cutils.schedule_main()
-        return vim.iter(embeddings)
-          :map(function(embedding)
-            embedding.filetype = cutils.filetype(embedding.filename)
-            return embedding
-          end)
-          :filter(function(embedding)
-            return embedding.filetype
-          end)
-          :totable()
-      end,
-    },
-  },
   providers = {
     github_models = {
       disabled = true,
