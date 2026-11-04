@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+#
+# Smoke test for the Neovim config, used locally and in CI (macOS + Ubuntu).
+#
+# Expects nvim on PATH and ~/.config/nvim linked (script/bootstrap), with
+# plugins and tools installed (vim/install.sh). Runs vim/test/smoke.lua
+# headless: startup errors, plugin loading, treesitter, LSP attach in sample
+# projects, format on save, completion and picker.
+
+set -uo pipefail
+
+cd "$(dirname "$0")/.." || exit 1
+
+if ! command -v nvim >/dev/null 2>&1
+then
+  echo "nvim not found (run vim/install.sh)" >&2
+  exit 1
+fi
+
+echo "› $(nvim --version | head -1)"
+smoke () { nvim --headless -c "luafile vim/test/smoke.lua" 2>&1; }
+if command -v timeout >/dev/null 2>&1 # not on stock macOS
+then
+  output="$(timeout 300 nvim --headless -c "luafile vim/test/smoke.lua" 2>&1)"
+else
+  output="$(smoke)"
+fi
+status=$?
+
+while IFS= read -r line
+do
+  case "$line" in
+    PASS\ *) printf '  [ \033[00;32mOK\033[0m ] %s\n' "${line#PASS }" ;;
+    FAIL\ *) printf '  [\033[0;31mFAIL\033[0m] %s\n' "${line#FAIL }" ;;
+    SKIP\ *) printf '  [\033[0;33mSKIP\033[0m] %s\n' "${line#SKIP }" ;;
+    *) [ -n "$line" ] && printf '         %s\n' "$line" ;;
+  esac
+done <<< "$output"
+
+echo ''
+if [ "$status" -eq 0 ]; then echo '  All tests passed.'; else echo '  Some tests failed.'; fi
+exit "$status"
