@@ -10,24 +10,25 @@ vim.api.nvim_create_autocmd('LspAttach', {
     vim.keymap.set('n', 'gt', vim.lsp.buf.type_definition, opts)
     vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
     vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
-    vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+    -- nowait: don't stall waiting for the 0.11 default grn/gra/grr/gri maps
+    vim.keymap.set('n', 'gr', vim.lsp.buf.references, vim.tbl_extend('force', opts, { nowait = true }))
 
     -- Diagnostics
-    vim.keymap.set('n', '<Leader>dj', vim.diagnostic.goto_next, opts)
-    vim.keymap.set('n', '<Leader>dk', vim.diagnostic.goto_prev, opts)
+    vim.keymap.set('n', '<Leader>dj', function() vim.diagnostic.jump({ count = 1, float = true }) end, opts)
+    vim.keymap.set('n', '<Leader>dk', function() vim.diagnostic.jump({ count = -1, float = true }) end, opts)
+    vim.keymap.set('n', '<Leader>dq', vim.diagnostic.setloclist, opts)
     vim.keymap.set('n', '<Leader>e', vim.diagnostic.open_float, opts)
 
     -- Actions
     vim.keymap.set('n', '<Leader>rn', vim.lsp.buf.rename, opts)
     vim.keymap.set('n', '<Leader>ca', vim.lsp.buf.code_action, opts)
-    vim.keymap.set('n', '<Leader>f', function() vim.lsp.buf.format({ async = true }) end, opts)
-    vim.keymap.set('n', '<Leader>q', vim.diagnostic.setloclist, opts)
+    vim.keymap.set('n', '<Leader>F', function() vim.lsp.buf.format({ async = true }) end, opts)
 
     -- Seldomly used
     vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
-    vim.keymap.set('n', '<Leader>wa', vim.lsp.buf.add_workspace_folder, opts)
-    vim.keymap.set('n', '<Leader>wr', vim.lsp.buf.remove_workspace_folder, opts)
-    vim.keymap.set('n', '<Leader>wl', function()
+    vim.keymap.set('n', '<Leader>Wa', vim.lsp.buf.add_workspace_folder, opts)
+    vim.keymap.set('n', '<Leader>Wr', vim.lsp.buf.remove_workspace_folder, opts)
+    vim.keymap.set('n', '<Leader>Wl', function()
       print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
     end, opts)
   end,
@@ -60,10 +61,15 @@ vim.lsp.config('rust_analyzer', {
   },
 })
 
+-- Only start inside Deno projects. With plain root_markers Neovim still
+-- starts the server (root_dir = nil) in Node projects.
 vim.lsp.config('denols', {
   cmd = { 'deno', 'lsp' },
   filetypes = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' },
-  root_markers = { 'deno.json', 'deno.jsonc' },
+  root_dir = function(bufnr, on_dir)
+    local root = vim.fs.root(bufnr, { 'deno.json', 'deno.jsonc' })
+    if root then on_dir(root) end
+  end,
 })
 
 -- Python: basedpyright (installed via `uv tool install basedpyright`).
@@ -144,10 +150,14 @@ vim.lsp.config('tailwindcss', {
     'html', 'css', 'scss', 'javascript', 'javascriptreact',
     'typescript', 'typescriptreact', 'vue', 'astro',
   },
-  root_markers = {
-    'tailwind.config.js', 'tailwind.config.cjs', 'tailwind.config.mjs',
-    'tailwind.config.ts', 'postcss.config.js', '.git',
-  },
+  -- Only start in Tailwind projects (not every repo with a .git dir)
+  root_dir = function(bufnr, on_dir)
+    local root = vim.fs.root(bufnr, {
+      'tailwind.config.js', 'tailwind.config.cjs', 'tailwind.config.mjs',
+      'tailwind.config.ts', 'postcss.config.js',
+    })
+    if root then on_dir(root) end
+  end,
 })
 
 vim.lsp.config('jdtls', {

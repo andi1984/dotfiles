@@ -10,7 +10,7 @@ map("v", "<S-Up>", ":m'<-2<CR>gv=gv", { silent = true, desc = "Move selection up
 map("n", "<leader>rf", ':echo fnamemodify(expand("%"), ":~:.")<CR>', { silent = true, desc = "Show relative path" })
 
 -- Select surrounding HTML tags
-map("n", "<leader>t", "vat", { silent = true, desc = "Select tag" })
+map("n", "<leader>T", "vat", { silent = true, desc = "Select tag" })
 map("v", "<leader>tu", "at", { silent = true, desc = "Expand to tag" })
 
 -- Tab navigation

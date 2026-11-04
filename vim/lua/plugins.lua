@@ -45,23 +45,9 @@ require("lazy").setup({
     },
   },
   {
-    "filipdutescu/renamer.nvim",
-    branch = "master",
-    keys = {
-      { "<leader>rn", function() require("renamer").rename() end, desc = "Rename" },
-    },
-    config = function()
-      require("renamer").setup()
-    end,
-  },
-  {
     "abecodes/tabout.nvim",
     event = "InsertEnter",
     config = true,
-  },
-  {
-    "editorconfig/editorconfig-vim",
-    event = "BufReadPre",
   },
   {
     "lukas-reineke/indent-blankline.nvim",
@@ -117,12 +103,12 @@ require("lazy").setup({
           -- Navigation
           map("n", "]c", function()
             if vim.wo.diff then return "]c" end
-            vim.schedule(function() gs.next_hunk() end)
+            vim.schedule(function() gs.nav_hunk("next") end)
             return "<Ignore>"
           end, { expr = true, desc = "Next hunk" })
           map("n", "[c", function()
             if vim.wo.diff then return "[c" end
-            vim.schedule(function() gs.prev_hunk() end)
+            vim.schedule(function() gs.nav_hunk("prev") end)
             return "<Ignore>"
           end, { expr = true, desc = "Prev hunk" })
           -- Actions
@@ -200,9 +186,8 @@ require("lazy").setup({
   --------------------------------------------------------------------------------
   -- Themes & UI
   --------------------------------------------------------------------------------
-  -- Removed vim-devicons and mini.icons (redundant)
   {
-    "kyazdani42/nvim-web-devicons",
+    "nvim-tree/nvim-web-devicons",
     lazy = true,
     config = function()
       require("nvim-web-devicons").setup({
@@ -213,15 +198,6 @@ require("lazy").setup({
       })
     end,
   },
-  {
-    "stevearc/dressing.nvim",
-    event = "VeryLazy",
-    config = true,
-  },
-  { "folke/tokyonight.nvim", lazy = true },
-  { "craftzdog/solarized-osaka.nvim", lazy = true },
-  { "EdenEast/nightfox.nvim", lazy = true },
-  { "neanias/everforest-nvim", branch = "main", lazy = true },
   { "comfysage/evergarden", lazy = true, priority = 1000 },
   { "MunifTanjim/nui.nvim", lazy = true },
 
@@ -230,7 +206,7 @@ require("lazy").setup({
   --------------------------------------------------------------------------------
   {
     "junegunn/fzf",
-    build = "./install --all",
+    build = "./install --bin", -- --all would rewrite ~/.fzf.bash (symlinked into this repo)
   },
   {
     "junegunn/fzf.vim",
@@ -265,14 +241,14 @@ require("lazy").setup({
   -- LSP & Linting
   --------------------------------------------------------------------------------
   {
-    "williamboman/mason.nvim",
+    "mason-org/mason.nvim",
     cmd = "Mason",
     config = true,
   },
   {
-    "williamboman/mason-lspconfig.nvim",
+    "mason-org/mason-lspconfig.nvim",
     event = "BufReadPre",
-    dependencies = { "williamboman/mason.nvim" },
+    dependencies = { "mason-org/mason.nvim" },
     config = true,
   },
   {
@@ -415,7 +391,7 @@ require("lazy").setup({
   {
     "nvim-lualine/lualine.nvim",
     event = "VeryLazy",
-    dependencies = { "kyazdani42/nvim-web-devicons" },
+    dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
       require("lualine").setup({
         options = {
@@ -449,21 +425,28 @@ require("lazy").setup({
       vim.env.PATH = cli_dir .. "/node_modules/.bin:" .. vim.env.PATH
       vim.cmd("TSUpdate")
     end,
-    event = "BufReadPost",
+    -- `main` requires Neovim 0.12 (vim.list.unique). Stay on the frozen
+    -- `master` branch while on 0.11; switch to `main` after upgrading.
+    branch = "master",
+    event = { "BufReadPost", "BufNewFile" },
+    cmd = { "TSInstall", "TSUpdate", "TSUninstall" },
     config = function()
       -- Ensure locally installed tree-sitter CLI is on PATH
       local cli_bin = vim.fn.stdpath("data") .. "/tree-sitter-cli/node_modules/.bin"
       if vim.uv.fs_stat(cli_bin) then
         vim.env.PATH = cli_bin .. ":" .. vim.env.PATH
       end
-      require("nvim-treesitter").setup({
+      require("nvim-treesitter.configs").setup({
         ensure_installed = {
-          "typescript", "javascript", "tsx", "vue", "html", "css",
+          "typescript", "javascript", "tsx", "vue", "html", "css", "scss",
           "lua", "vim", "vimdoc", "query",
           "go", "rust", "python", "java", "kotlin",
           "json", "yaml", "toml", "markdown", "markdown_inline",
-          "bash", "graphql", "dockerfile",
+          "bash", "graphql", "dockerfile", "astro", "twig", "styled",
+          "regex", "jsdoc", "diff", "gitcommit",
         },
+        highlight = { enable = true },
+        indent = { enable = true },
       })
     end,
   },
@@ -476,17 +459,8 @@ require("lazy").setup({
     ft = { "html", "css", "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "astro" },
   },
   {
-    "styled-components/vim-styled-components",
-    branch = "main",
-    ft = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
-  },
-  {
     "AndrewRadev/tagalong.vim",
     ft = { "html", "xml", "jsx", "javascriptreact", "typescriptreact", "vue" },
-  },
-  {
-    "nelsyeung/twig.vim",
-    ft = "twig",
   },
   {
     "David-Kunz/jester",
@@ -494,19 +468,6 @@ require("lazy").setup({
     keys = {
       { "<leader>jj", function() require("jester").run_file() end, desc = "Run Jest file" },
     },
-  },
-  {
-    "kristijanhusak/vim-js-file-import",
-    build = "npm install",
-    ft = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
-  },
-  {
-    "jparise/vim-graphql",
-    ft = { "graphql", "javascript", "typescript" },
-  },
-  {
-    "wuelnerdotexe/vim-astro",
-    ft = "astro",
   },
   {
     "vuki656/package-info.nvim",
@@ -529,7 +490,7 @@ require("lazy").setup({
   {
     "numToStr/Comment.nvim",
     keys = {
-      { "<leader>c", "<Plug>(comment_toggle_linewise_current)", desc = "Toggle comment" },
+      { "<leader>/", "<Plug>(comment_toggle_linewise_current)", desc = "Toggle comment" },
       { "gc", mode = { "n", "v" }, desc = "Comment toggle" },
     },
     dependencies = { "JoosepAlviste/nvim-ts-context-commentstring" },
@@ -647,10 +608,11 @@ require("lazy").setup({
   {
     "johmsalas/text-case.nvim",
     keys = {
-      { "ga", mode = { "n", "v" }, desc = "Text case" },
+      { "gA", mode = { "n", "v" }, desc = "Text case" },
     },
     config = function()
-      require("textcase").setup()
+      -- `ga` belongs to EasyAlign
+      require("textcase").setup({ prefix = "gA" })
     end,
   },
   {
@@ -668,24 +630,12 @@ require("lazy").setup({
   -- File-specific plugins
   --------------------------------------------------------------------------------
   {
-    "ekalinin/Dockerfile.vim",
-    ft = { "dockerfile", "docker-compose" },
-  },
-  {
-    "rust-lang/rust.vim",
-    ft = "rust",
-  },
-  {
     "ray-x/go.nvim",
     ft = { "go", "gomod", "gowork", "gotmpl" },
     dependencies = { "nvim-lua/plenary.nvim", "nvim-treesitter/nvim-treesitter" },
     config = function()
       require("go").setup()
     end,
-  },
-  {
-    "charlespascoe/vim-go-syntax",
-    ft = "go",
   },
   {
     "iamcco/markdown-preview.nvim",
@@ -710,7 +660,6 @@ require("lazy").setup({
       disabled_plugins = {
         "gzip",
         "matchit",
-        "matchparen",
         "tarPlugin",
         "tohtml",
         "tutor",
