@@ -206,7 +206,7 @@ require("lazy").setup({
   --------------------------------------------------------------------------------
   {
     "junegunn/fzf",
-    build = "./install --all",
+    build = "./install --bin", -- --all would rewrite ~/.fzf.bash (symlinked into this repo)
   },
   {
     "junegunn/fzf.vim",
