@@ -58,11 +58,10 @@ require("lazy").setup({
     end,
   },
   {
-    "norcalli/nvim-colorizer.lua",
+    -- Highlights hex/rgb/hsl/named colors in place
+    "brenoprata10/nvim-highlight-colors",
     event = "BufReadPre",
-    config = function()
-      require("colorizer").setup()
-    end,
+    opts = {},
   },
   {
     "folke/which-key.nvim",
@@ -442,8 +441,17 @@ require("lazy").setup({
     ft = { "html", "css", "javascript", "javascriptreact", "typescript", "typescriptreact", "vue", "astro" },
   },
   {
-    "AndrewRadev/tagalong.vim",
-    ft = { "html", "xml", "jsx", "javascriptreact", "typescriptreact", "vue" },
+    -- Rename the paired tag while editing one (like tagalong). Auto-closing
+    -- stays off, matching typescript-tools' jsx_close_tag = false.
+    "windwp/nvim-ts-autotag",
+    ft = { "html", "xml", "javascriptreact", "typescriptreact", "vue", "astro" },
+    opts = {
+      opts = {
+        enable_close = false,
+        enable_rename = true,
+        enable_close_on_slash = false,
+      },
+    },
   },
   {
     "David-Kunz/jester",
@@ -500,11 +508,17 @@ require("lazy").setup({
     config = true,
   },
   {
-    "mhinz/vim-grepper",
-    cmd = { "Grepper", "GrepperRg" },
+    -- Project-wide search & replace with a live preview
+    "MagicDuck/grug-far.nvim",
+    cmd = "GrugFar",
     keys = {
-      { "<leader>R", ":let @s='\\<'.expand('<cword>').'\\>'<CR>:Grepper -cword -noprompt<CR>:cfdo %s/<C-r>s//g | update<Left><Left><Left><Left><Left><Left><Left><Left><Left><Left><Left>", desc = "Replace word in project" },
+      { "<leader>R", function()
+        require("grug-far").open({
+          prefills = { search = vim.fn.expand("<cword>"), flags = "--word-regexp" },
+        })
+      end, desc = "Replace word in project" },
     },
+    opts = {},
   },
 
   --------------------------------------------------------------------------------
