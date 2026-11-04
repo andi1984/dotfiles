@@ -3,7 +3,12 @@ return {
   {
     "mason-org/mason.nvim",
     lazy = false, -- puts mason/bin on PATH before any LSP/formatter starts
-    config = true,
+    priority = 100, -- before nvim-treesitter, which needs mason's tree-sitter CLI
+    config = function()
+      require("mason").setup()
+      -- install anything from config/tools.lua that is missing, in the background
+      vim.defer_fn(function() require("config.tools").install_mason() end, 1000)
+    end,
   },
   {
     "mason-org/mason-lspconfig.nvim",
