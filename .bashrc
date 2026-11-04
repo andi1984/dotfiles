@@ -281,5 +281,7 @@ if [ -z "$TMUX" ] && [ -z "$HERDR_ENV" ] && [ -z "$NO_MUX" ] && [ -t 0 ] && [ -t
 fi
 
 # >>> railway initialize >>>
-source "$HOME/.railway/env"
+[ -f "$HOME/.railway/env" ] && source "$HOME/.railway/env"
 # <<< railway initialize <<<
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
