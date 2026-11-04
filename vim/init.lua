@@ -11,18 +11,10 @@ vim.g.loaded_node_provider = 0
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
--- Disable line wrap
-vim.wo.wrap = false
-
--- Search highlighting: only show while typing
-vim.cmd("autocmd CmdlineEnter /,? :set hlsearch")
-vim.cmd("autocmd CmdlineLeave /,? :set nohlsearch")
-
 -- Load core configuration
+require("opts")
 require("plugins") -- lazy.nvim handles plugin loading
 require("keymap")
-require("sets")
-require("opts")
 require("config.lsp") -- Native Neovim 0.11 LSP config
 
 -- Colorscheme (lazy.nvim already loaded it with priority)
