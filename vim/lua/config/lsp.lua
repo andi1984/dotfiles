@@ -22,7 +22,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
     -- Actions
     vim.keymap.set('n', '<Leader>rn', vim.lsp.buf.rename, opts)
     vim.keymap.set('n', '<Leader>ca', vim.lsp.buf.code_action, opts)
-    vim.keymap.set('n', '<Leader>F', function() vim.lsp.buf.format({ async = true }) end, opts)
 
     -- Seldomly used
     vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
@@ -32,6 +31,16 @@ vim.api.nvim_create_autocmd('LspAttach', {
       print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
     end, opts)
   end,
+})
+
+-- Diagnostic signs (kept from the ALE setup)
+vim.diagnostic.config({
+  signs = {
+    text = {
+      [vim.diagnostic.severity.ERROR] = "●",
+      [vim.diagnostic.severity.WARN] = ".",
+    },
+  },
 })
 
 -- Server configs: nvim-lspconfig ships the defaults (cmd, filetypes, root
@@ -143,7 +152,9 @@ vim.lsp.config('vtsls', {
   },
 })
 
+-- eslint: vscode-eslint-language-server (mason `eslint-lsp`); lspconfig only
+-- starts it in projects with an eslint config.
 vim.lsp.enable({
   'rust_analyzer', 'denols', 'basedpyright', 'ruff', 'gopls', 'vue_ls', 'vtsls', 'tailwindcss',
-  'jdtls', 'kotlin_lsp',
+  'eslint', 'jdtls', 'kotlin_lsp',
 })

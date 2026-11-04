@@ -19,6 +19,9 @@ map("n", "<leader>tp", ":tabprev<CR>", { desc = "Prev tab" })
 map("n", "<leader>tc", ":tabnew<CR>", { desc = "New tab" })
 map("n", "<leader>td", ":tabclose<CR>", { desc = "Close tab" })
 
+-- Next diagnostic, wraps around (was ALE's <C-e>)
+map("n", "<C-e>", function() vim.diagnostic.jump({ count = 1, float = true }) end, { desc = "Next diagnostic" })
+
 -- Auto-indent whole file
 map("n", "<leader>ai", "mzgg=G`z", { desc = "Auto-indent file" })
 

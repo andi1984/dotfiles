@@ -295,27 +295,14 @@ require("lazy").setup({
     end,
   },
   {
-    "dense-analysis/ale",
-    event = { "BufReadPre", "BufNewFile" },
+    -- Format on save (replaces ALE fixers). Linting comes from LSP servers.
+    "stevearc/conform.nvim",
+    event = "BufWritePre",
+    cmd = "ConformInfo",
+    keys = {
+      { "<leader>F", function() require("conform").format({ async = true, lsp_format = "fallback" }) end, desc = "Format buffer" },
+    },
     config = function()
-      vim.g.ale_lint_on_enter = 0
-      vim.g.ale_lint_on_save = 1
-      vim.g.ale_sign_error = "●"
-      vim.g.ale_sign_warning = "."
-      vim.g.ale_linters = { rust = { "analyzer" } }
-      vim.g.ale_fixers = {
-        javascript = { "prettier" },
-        javascriptreact = { "prettier" },
-        typescript = { "prettier" },
-        typescriptreact = { "prettier" },
-        css = { "prettier" },
-        vue = { "prettier" },
-        rust = { "rustfmt" },
-      }
-      vim.g.ale_fix_on_save = 1
-
-      -- Python: use the formatter the project configures, else ruff_format.
-      -- ALE resolves executables from the project's .venv before $PATH.
       local function read(path)
         local f = io.open(path, "r")
         if not f then return "" end
@@ -324,7 +311,8 @@ require("lazy").setup({
         return content
       end
 
-      local function python_fixers(bufnr)
+      -- Python: use the formatter the project configures, else ruff_format.
+      local function python_formatters(bufnr)
         local root = vim.fs.root(bufnr, {
           "pyproject.toml", "setup.cfg", "tox.ini", "ruff.toml", ".ruff.toml",
           ".style.yapf", ".isort.cfg", ".pre-commit-config.yaml", ".git",
@@ -338,8 +326,8 @@ require("lazy").setup({
 
         local isort = pyproject:find("%[tool%.isort%]") or exists(".isort.cfg")
           or setup_cfg:find("%[isort%]") or precommit:find("id:%s*isort")
-        local function with_isort(fixer)
-          return isort and { "isort", fixer } or { fixer }
+        local function with_isort(formatter)
+          return isort and { "isort", formatter } or { formatter }
         end
 
         if pyproject:find("%[tool%.black%]") or precommit:find("id:%s*black") then
@@ -350,24 +338,47 @@ require("lazy").setup({
           return with_isort("autopep8")
         elseif pyproject:find("%[tool%.ruff") or exists("ruff.toml") or exists(".ruff.toml")
           or precommit:find("id:%s*ruff%-format") then
-          -- `ruff format` doesn't sort imports; run ruff's isort rule (I) first.
-          -- Only that rule is applied, honouring [tool.ruff.lint.isort].
-          vim.b[bufnr].ale_python_ruff_options = "--select I"
-          return { "ruff", "ruff_format" }
+          -- `ruff format` doesn't sort imports; apply ruff's isort rule (I) first,
+          -- honouring [tool.ruff.lint.isort].
+          return { "ruff_organize_imports", "ruff_format" }
         elseif vim.uv.fs_stat(root .. "/.venv/bin/black") then
           return with_isort("black")
         end
         return with_isort("ruff_format")
       end
 
-      vim.api.nvim_create_autocmd("FileType", {
-        pattern = "python",
-        callback = function(args)
-          vim.b[args.buf].ale_fixers = { python = python_fixers(args.buf) }
-        end,
-      })
+      -- Prefer the project's .venv binary over $PATH (like ALE did).
+      local function venv_command(name)
+        return function(_, ctx)
+          local root = vim.fs.root(ctx.buf, ".venv")
+          local bin = root and (root .. "/.venv/bin/" .. name)
+          if bin and vim.fn.executable(bin) == 1 then return bin end
+          return name
+        end
+      end
 
-      vim.keymap.set("n", "<C-e>", "<Plug>(ale_next_wrap)", { silent = true })
+      local prettier = { "prettier" } -- conform prefers node_modules/.bin/prettier
+      require("conform").setup({
+        formatters_by_ft = {
+          javascript = prettier,
+          javascriptreact = prettier,
+          typescript = prettier,
+          typescriptreact = prettier,
+          css = prettier,
+          vue = prettier,
+          rust = { "rustfmt" },
+          python = python_formatters,
+        },
+        formatters = {
+          black = { command = venv_command("black") },
+          isort = { command = venv_command("isort") },
+          yapf = { command = venv_command("yapf") },
+          autopep8 = { command = venv_command("autopep8") },
+          ruff_format = { command = venv_command("ruff") },
+          ruff_organize_imports = { command = venv_command("ruff") },
+        },
+        format_on_save = { timeout_ms = 2000, lsp_format = "never" },
+      })
     end,
   },
   {
