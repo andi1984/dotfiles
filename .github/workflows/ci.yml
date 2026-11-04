@@ -1,7 +1,9 @@
 name: CI
 
-# Bootstraps the dotfiles into a throwaway HOME on Ubuntu and macOS and starts
-# bash and zsh, failing on any startup error. See script/test.
+# test: bootstraps the dotfiles into a throwaway HOME on Ubuntu and macOS and
+#       starts bash and zsh, failing on any startup error. See script/test.
+# nvim: installs the pinned Neovim, plugins and tools (vim/install.sh) and runs
+#       the headless config smoke test. See script/test-nvim.
 
 on:
   push:
@@ -46,3 +48,35 @@ jobs:
 
       - name: Smoke test
         run: script/test
+
+  nvim:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v5
+
+      # basedpyright/ruff are uv tools; vtsls, prettier etc. are npm-based mason packages
+      - uses: astral-sh/setup-uv@v6
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Cache Neovim, plugins and tools
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.local/opt
+            ~/.local/share/nvim
+          key: nvim-${{ runner.os }}-${{ hashFiles('vim/nvim-release', 'vim/lazy-lock.json', 'vim/lua/config/tools.lua') }}
+
+      - name: Link config
+        run: mkdir -p ~/.config && ln -sfn "$PWD/vim" ~/.config/nvim
+
+      - name: Install Neovim, plugins and tools
+        run: vim/install.sh
+
+      - name: Smoke test
+        run: PATH="$HOME/.local/bin:$PATH" script/test-nvim

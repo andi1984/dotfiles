@@ -130,14 +130,38 @@ vim.lsp.config('kotlin_lsp', {
   cmd = { 'intellij-server', '--stdio' },
 })
 
--- Vue hybrid mode: vue_ls handles templates/CSS and forwards TS requests to
--- vtsls, which loads @vue/typescript-plugin from mason's vue-language-server.
--- vtsls runs for .vue only; plain TS/JS uses typescript-tools.nvim.
+-- TypeScript / JavaScript / Vue
+--
+--   project TypeScript < 7 (or none) -> vtsls (wraps tsserver; also serves Vue)
+--   project TypeScript >= 7          -> tsc --lsp (native TS 7 server, no tsserver)
+--   Deno projects                    -> denols (both configs exclude Deno roots)
+--
+-- The version comes from the nearest node_modules/typescript/package.json.
+local function ts_major(bufnr)
+  local fname = vim.api.nvim_buf_get_name(bufnr)
+  local pkg = vim.fs.find('node_modules/typescript/package.json', { path = vim.fs.dirname(fname), upward = true })[1]
+  if not pkg then return nil end
+  local ok, data = pcall(vim.json.decode, table.concat(vim.fn.readfile(pkg), '\n'))
+  local version = ok and data and vim.version.parse(data.version or '')
+  return version and version.major or nil
+end
+
+local function is_ts7(bufnr)
+  local major = ts_major(bufnr)
+  return major ~= nil and major >= 7
+end
+
+local vtsls_root = vim.lsp.config.vtsls.root_dir
 vim.lsp.config('vtsls', {
-  filetypes = { 'vue' },
+  filetypes = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact', 'vue' },
+  root_dir = function(bufnr, on_dir)
+    if not is_ts7(bufnr) then vtsls_root(bufnr, on_dir) end
+  end,
   settings = {
     vtsls = {
+      autoUseWorkspaceTsdk = true, -- the project's TypeScript, else vtsls' bundled one
       tsserver = {
+        -- Vue hybrid mode: vue_ls forwards TS requests in .vue files to vtsls
         globalPlugins = {
           {
             name = '@vue/typescript-plugin',
@@ -152,9 +176,24 @@ vim.lsp.config('vtsls', {
   },
 })
 
+local tsc_root = vim.lsp.config.tsc.root_dir
+vim.lsp.config('tsc', {
+  -- lspconfig would warn in every pre-7 project; only try where TS 7 is installed
+  root_dir = function(bufnr, on_dir)
+    if is_ts7(bufnr) then tsc_root(bufnr, on_dir) end
+  end,
+  -- lspconfig caches the binary inside lsp/tsc.lua, but every access to
+  -- vim.lsp.config.tsc reloads that file, so its cmd never sees the cache
+  -- and falls back to a global `tsc`. Start the project's binary directly.
+  cmd = function(dispatchers, config)
+    local bin = vim.fs.find('node_modules/.bin/tsc', { path = config.root_dir, upward = true })[1] or 'tsc'
+    return vim.lsp.rpc.start({ bin, '--lsp', '--stdio' }, dispatchers, { cwd = config.root_dir })
+  end,
+})
+
 -- eslint: vscode-eslint-language-server (mason `eslint-lsp`); lspconfig only
 -- starts it in projects with an eslint config.
 vim.lsp.enable({
-  'rust_analyzer', 'denols', 'basedpyright', 'ruff', 'gopls', 'vue_ls', 'vtsls', 'tailwindcss',
-  'eslint', 'jdtls', 'kotlin_lsp',
+  'rust_analyzer', 'denols', 'basedpyright', 'ruff', 'gopls', 'vue_ls', 'vtsls', 'tsc',
+  'tailwindcss', 'eslint', 'jdtls', 'kotlin_lsp',
 })

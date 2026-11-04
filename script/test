@@ -106,11 +106,11 @@ else
 fi
 
 echo "› syntax"
-for f in .bashrc fzf/fzf.bash.symlink script/bootstrap script/install script/test
+for f in .bashrc fzf/fzf.bash.symlink script/bootstrap script/install script/test script/test-nvim
 do
   if bash -n "$f"; then pass "bash -n $f"; else fail "bash -n $f"; fi
 done
-for f in bin/dot herdr/install.sh homebrew/install.sh node/install.sh macos/install.sh
+for f in bin/dot herdr/install.sh homebrew/install.sh node/install.sh macos/install.sh vim/install.sh
 do
   if sh -n "$f"; then pass "sh -n $f"; else fail "sh -n $f"; fi
 done
@@ -135,8 +135,8 @@ fi
 if [ ${#shellcheck[@]} -gt 0 ]
 then
   if out="$("${shellcheck[@]}" -e SC1090,SC1091 \
-      script/bootstrap script/install script/test bin/dot \
-      herdr/install.sh homebrew/install.sh node/install.sh 2>&1)" &&
+      script/bootstrap script/install script/test script/test-nvim bin/dot \
+      herdr/install.sh homebrew/install.sh node/install.sh vim/install.sh 2>&1)" &&
      out2="$("${shellcheck[@]}" -s bash -e SC1090,SC1091 .bashrc fzf/fzf.bash.symlink 2>&1)"
   then
     pass "shellcheck"

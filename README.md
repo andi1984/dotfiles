@@ -76,6 +76,20 @@ server. On a machine without herdr it only links the config.
 New terminals in bash ask which multiplexer to start, offering only the ones
 that are installed. Set `NO_MUX=1` to skip the question.
 
+## neovim
+
+`vim/` is the Neovim config (lazy.nvim, specs in `vim/lua/plugins/<area>.lua`).
+
+- **Version**: `vim/install.sh` installs the release pinned in `vim/nvim-release`
+  (sha256-checked) to `~/.local/opt` and links `~/.local/bin/nvim`. To upgrade,
+  bump the version and checksums there (the file shows the `gh api` command).
+- **Plugins** are pinned in `vim/lazy-lock.json`; the installer restores them.
+- **Tools**: parsers, mason packages and uv tools are listed in
+  `vim/lua/config/tools.lua`. The installer installs them; missing mason
+  packages also install in the background on startup.
+- **TypeScript**: vtsls for projects on TypeScript < 7 (and Vue), the native
+  `tsc --lsp` server for TypeScript 7+, denols for Deno projects.
+
 ## testing
 
 ```sh
@@ -88,7 +102,15 @@ without any tools) and with the current one. Any startup error fails the test.
 Shell scripts are linted with shellcheck (or `uvx shellcheck-py` when only
 `uv` is installed).
 
-GitHub Actions runs the same test on `ubuntu-latest` and `macos-latest` for
+```sh
+script/test-nvim
+```
+
+Headless smoke test of the Neovim config (needs `vim/install.sh` first):
+startup errors, every plugin loading, treesitter, LSP attach in sample
+projects, format on save, completion and picker.
+
+GitHub Actions runs both tests on `ubuntu-latest` and `macos-latest` for
 every push. The Bash-It fork isn't publicly fetchable, so CI covers the "no Bash-It" path.
 
 ## thanks
