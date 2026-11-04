@@ -96,11 +96,6 @@ require("lazy").setup({
     "sindrets/diffview.nvim",
     cmd = { "DiffviewOpen", "DiffviewFileHistory" },
   },
-  {
-    "akinsho/git-conflict.nvim",
-    event = "BufReadPre",
-    config = true,
-  },
   -- Removed vim-gitgutter (redundant with gitsigns)
   {
     "lewis6991/gitsigns.nvim",
@@ -296,6 +291,7 @@ require("lazy").setup({
           css = prettier,
           vue = prettier,
           rust = { "rustfmt" },
+          go = { "goimports", "gofmt", stop_after_first = true },
           python = python_formatters,
         },
         formatters = {
@@ -455,10 +451,6 @@ require("lazy").setup({
     end,
   },
   {
-    "tpope/vim-fugitive",
-    cmd = { "Git", "G", "Gdiff", "Gblame", "Gwrite", "Gread" },
-  },
-  {
     "ThePrimeagen/refactoring.nvim",
     keys = {
       { "<leader>re", function() require("refactoring").refactor("Extract Function") end, mode = "v", desc = "Extract function" },
@@ -559,14 +551,6 @@ require("lazy").setup({
   --------------------------------------------------------------------------------
   -- File-specific plugins
   --------------------------------------------------------------------------------
-  {
-    "ray-x/go.nvim",
-    ft = { "go", "gomod", "gowork", "gotmpl" },
-    dependencies = { "nvim-lua/plenary.nvim", "nvim-treesitter/nvim-treesitter" },
-    config = function()
-      require("go").setup()
-    end,
-  },
   {
     "iamcco/markdown-preview.nvim",
     ft = "markdown",
