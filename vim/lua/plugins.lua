@@ -242,14 +242,21 @@ require("lazy").setup({
   --------------------------------------------------------------------------------
   {
     "mason-org/mason.nvim",
-    cmd = "Mason",
+    lazy = false, -- puts mason/bin on PATH before any LSP/formatter starts
     config = true,
   },
   {
     "mason-org/mason-lspconfig.nvim",
     event = "BufReadPre",
     dependencies = { "mason-org/mason.nvim" },
-    config = true,
+    -- config/lsp.lua decides which servers run; mason only puts binaries on PATH
+    opts = { automatic_enable = false },
+  },
+  {
+    -- Server defaults only (lsp/*.lua: cmd, filetypes, root detection).
+    -- Overrides and vim.lsp.enable() live in config/lsp.lua.
+    "neovim/nvim-lspconfig",
+    lazy = false,
   },
   {
     "pmizio/typescript-tools.nvim",
