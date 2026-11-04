@@ -6,7 +6,7 @@ return {
   },
   {
     -- Rename the paired tag while editing one (like tagalong). Auto-closing
-    -- stays off, matching typescript-tools' jsx_close_tag = false.
+    -- stays off (it was disabled in the old TS setup too).
     "windwp/nvim-ts-autotag",
     ft = { "html", "xml", "javascriptreact", "typescriptreact", "vue", "astro" },
     opts = {

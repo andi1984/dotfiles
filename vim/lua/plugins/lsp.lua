@@ -19,42 +19,6 @@ return {
     lazy = false,
   },
   {
-    "pmizio/typescript-tools.nvim",
-    ft = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
-    dependencies = { "nvim-lua/plenary.nvim" },
-    config = function()
-      require("typescript-tools").setup({
-        settings = {
-          separate_diagnostic_server = true,
-          publish_diagnostic_on = "insert_leave",
-          tsserver_max_memory = "auto",
-          complete_function_calls = false,
-          include_completions_with_insert_text = true,
-          code_lens = "off",
-          jsx_close_tag = { enable = false },
-        },
-        on_attach = function(client)
-          client.server_capabilities.documentFormattingProvider = false
-          client.server_capabilities.documentRangeFormattingProvider = false
-        end,
-        root_dir = function(bufnr, on_dir)
-          local node_root = vim.fs.root(bufnr, { "package.json", "node_modules" })
-          if not node_root then
-            on_dir(nil)
-            return
-          end
-          local deno_root = vim.fs.root(bufnr, { "deno.json", "deno.jsonc", "import_map.json", "denops" })
-          if deno_root and #deno_root <= #node_root then
-            on_dir(nil)
-            return
-          end
-          on_dir(node_root)
-        end,
-        single_file_support = false,
-      })
-    end,
-  },
-  {
     -- Format on save (replaces ALE fixers). Linting comes from LSP servers.
     "stevearc/conform.nvim",
     event = "BufWritePre",
