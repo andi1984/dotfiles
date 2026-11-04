@@ -471,23 +471,19 @@ require("lazy").setup({
     config = true,
   },
   {
-    "numToStr/Comment.nvim",
-    keys = {
-      { "<leader>/", "<Plug>(comment_toggle_linewise_current)", desc = "Toggle comment" },
-      { "gc", mode = { "n", "v" }, desc = "Comment toggle" },
-    },
-    dependencies = { "JoosepAlviste/nvim-ts-context-commentstring" },
-    config = function()
-      require("Comment").setup({
-        pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook(),
-      })
-    end,
-  },
-  {
+    -- Context-aware commentstring (JSX, Vue, embedded CSS...) for Neovim's
+    -- built-in gc/gcc commenting.
     "JoosepAlviste/nvim-ts-context-commentstring",
     lazy = true,
-    config = function()
-      require("ts_context_commentstring").setup({ enable_autocmd = false })
+    opts = { enable_autocmd = false },
+    init = function()
+      local get_option = vim.filetype.get_option
+      ---@diagnostic disable-next-line: duplicate-set-field
+      vim.filetype.get_option = function(filetype, option)
+        return option == "commentstring"
+            and require("ts_context_commentstring.internal").calculate_commentstring()
+          or get_option(filetype, option)
+      end
     end,
   },
   {

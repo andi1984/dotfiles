@@ -22,6 +22,9 @@ map("n", "<leader>td", ":tabclose<CR>", { desc = "Close tab" })
 -- Next diagnostic, wraps around (was ALE's <C-e>)
 map("n", "<C-e>", function() vim.diagnostic.jump({ count = 1, float = true }) end, { desc = "Next diagnostic" })
 
+-- Toggle comment on the current line (built-in gcc)
+map("n", "<leader>/", "gcc", { remap = true, desc = "Toggle comment" })
+
 -- Auto-indent whole file
 map("n", "<leader>ai", "mzgg=G`z", { desc = "Auto-indent file" })
 
