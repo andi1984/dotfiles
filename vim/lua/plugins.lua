@@ -550,53 +550,33 @@ require("lazy").setup({
   -- Autocomplete
   --------------------------------------------------------------------------------
   {
-    "hrsh7th/nvim-cmp",
+    "saghen/blink.cmp",
+    version = "1.*", -- release tags ship the prebuilt fuzzy matcher
     event = { "InsertEnter", "CmdlineEnter" },
-    dependencies = {
-      "hrsh7th/cmp-nvim-lsp",
-      "hrsh7th/cmp-buffer",
-      "hrsh7th/cmp-path",
-      "hrsh7th/cmp-cmdline",
-      "petertriho/cmp-git",
-      "hrsh7th/cmp-emoji",
-      "hrsh7th/cmp-vsnip",
-      "hrsh7th/vim-vsnip",
-    },
-    config = function()
-      local cmp = require("cmp")
-      cmp.setup({
-        snippet = {
-          expand = function(args)
-            vim.fn["vsnip#anonymous"](args.body)
-          end,
+    dependencies = { "Kaiser-Yang/blink-cmp-git" },
+    opts = {
+      keymap = {
+        -- <CR> accepts, <C-Space> opens, <C-e> closes, <C-b>/<C-f> scroll docs
+        preset = "enter",
+        -- leave <Tab>/<S-Tab> to tabout.nvim and native snippet jumps
+        ["<Tab>"] = false,
+        ["<S-Tab>"] = false,
+      },
+      completion = {
+        documentation = { auto_show = true, auto_show_delay_ms = 300 },
+      },
+      sources = {
+        default = { "lsp", "path", "snippets", "buffer" },
+        per_filetype = { gitcommit = { "git", "buffer" } },
+        providers = {
+          git = { module = "blink-cmp-git", name = "Git" },
         },
-        mapping = cmp.mapping.preset.insert({
-          ["<C-b>"] = cmp.mapping.scroll_docs(-4),
-          ["<C-f>"] = cmp.mapping.scroll_docs(4),
-          ["<C-Space>"] = cmp.mapping.complete(),
-          ["<C-e>"] = cmp.mapping.abort(),
-          ["<CR>"] = cmp.mapping.confirm({ select = true }),
-        }),
-        sources = cmp.config.sources({
-          { name = "nvim_lsp" },
-          { name = "vsnip" },
-          { name = "buffer" },
-          { name = "path" },
-          { name = "emoji" },
-        }),
-      })
-      cmp.setup.filetype("gitcommit", {
-        sources = cmp.config.sources({ { name = "cmp_git" } }, { { name = "buffer" } }),
-      })
-      cmp.setup.cmdline({ "/", "?" }, {
-        mapping = cmp.mapping.preset.cmdline(),
-        sources = { { name = "buffer" } },
-      })
-      cmp.setup.cmdline(":", {
-        mapping = cmp.mapping.preset.cmdline(),
-        sources = cmp.config.sources({ { name = "path" } }, { { name = "cmdline" } }),
-      })
-    end,
+      },
+      cmdline = {
+        completion = { menu = { auto_show = true } },
+      },
+      signature = { enabled = true },
+    },
   },
 
   --------------------------------------------------------------------------------
@@ -613,10 +593,7 @@ require("lazy").setup({
           map = "<M-e>",
         },
       })
-      -- Integration with nvim-cmp
-      local cmp_autopairs = require("nvim-autopairs.completion.cmp")
-      local cmp = require("cmp")
-      cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
+      -- blink.cmp adds brackets after accepted functions itself
     end,
   },
 
