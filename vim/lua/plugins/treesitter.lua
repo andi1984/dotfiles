@@ -1,37 +1,43 @@
 -- Treesitter parsers, highlighting and indent
+local function cli_path()
+  -- tree-sitter CLI (needed to build parsers), installed locally via npm
+  local cli_bin = vim.fn.stdpath("data") .. "/tree-sitter-cli/node_modules/.bin"
+  if vim.uv.fs_stat(cli_bin) and not vim.env.PATH:find(cli_bin, 1, true) then
+    vim.env.PATH = cli_bin .. ":" .. vim.env.PATH
+  end
+end
+
 return {
   {
     "nvim-treesitter/nvim-treesitter",
+    branch = "main",
+    lazy = false, -- main does not support lazy-loading
     build = function()
-      -- Install tree-sitter CLI locally (no global npm install needed)
       local cli_dir = vim.fn.stdpath("data") .. "/tree-sitter-cli"
       vim.fn.mkdir(cli_dir, "p")
       vim.fn.system({ "npm", "install", "--prefix", cli_dir, "tree-sitter-cli" })
-      vim.env.PATH = cli_dir .. "/node_modules/.bin:" .. vim.env.PATH
-      vim.cmd("TSUpdate")
+      cli_path()
+      require("nvim-treesitter").update():wait(300000)
     end,
-    -- `main` requires Neovim 0.12 (vim.list.unique). Stay on the frozen
-    -- `master` branch while on 0.11; switch to `main` after upgrading.
-    branch = "master",
-    event = { "BufReadPost", "BufNewFile" },
-    cmd = { "TSInstall", "TSUpdate", "TSUninstall" },
     config = function()
-      -- Ensure locally installed tree-sitter CLI is on PATH
-      local cli_bin = vim.fn.stdpath("data") .. "/tree-sitter-cli/node_modules/.bin"
-      if vim.uv.fs_stat(cli_bin) then
-        vim.env.PATH = cli_bin .. ":" .. vim.env.PATH
+      cli_path()
+      local ts = require("nvim-treesitter")
+      local installed = ts.get_installed()
+      local missing = vim.tbl_filter(function(p)
+        return not vim.list_contains(installed, p)
+      end, require("config.tools").parsers)
+      if #missing > 0 then
+        ts.install(missing) -- async, in the background
       end
-      require("nvim-treesitter.configs").setup({
-        ensure_installed = {
-          "typescript", "javascript", "tsx", "vue", "html", "css", "scss",
-          "lua", "vim", "vimdoc", "query",
-          "go", "rust", "python", "java", "kotlin",
-          "json", "yaml", "toml", "markdown", "markdown_inline",
-          "bash", "graphql", "dockerfile", "astro", "twig", "styled",
-          "regex", "jsdoc", "diff", "gitcommit",
-        },
-        highlight = { enable = true },
-        indent = { enable = true },
+
+      -- main: highlighting and indent are started per buffer
+      vim.api.nvim_create_autocmd("FileType", {
+        group = vim.api.nvim_create_augroup("user_treesitter", { clear = true }),
+        callback = function(args)
+          if pcall(vim.treesitter.start, args.buf) then
+            vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+          end
+        end,
       })
     end,
   },

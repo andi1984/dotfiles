@@ -36,10 +36,11 @@ return {
   {
     "ThePrimeagen/refactoring.nvim",
     keys = {
-      { "<leader>re", function() require("refactoring").refactor("Extract Function") end, mode = "v", desc = "Extract function" },
-      { "<leader>rv", function() require("refactoring").refactor("Extract Variable") end, mode = "v", desc = "Extract variable" },
+      { "<leader>re", function() return require("refactoring").extract_func() end, mode = "x", expr = true, desc = "Extract function" },
+      { "<leader>rv", function() return require("refactoring").extract_var() end, mode = "x", expr = true, desc = "Extract variable" },
     },
-    dependencies = { "nvim-lua/plenary.nvim", "nvim-treesitter/nvim-treesitter" },
+    -- async.nvim is only needed on Neovim 0.12 (built in from 0.13)
+    dependencies = { "lewis6991/async.nvim" },
     config = true,
   },
   {
